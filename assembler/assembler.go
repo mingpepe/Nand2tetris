@@ -10,13 +10,39 @@ import (
 )
 
 type Assembler struct {
-	destTable map[string]uint16
-	compTable map[string]uint16
-	jumpTable map[string]uint16
+	builtInReg map[string]uint16
+	destTable  map[string]uint16
+	compTable  map[string]uint16
+	jumpTable  map[string]uint16
 }
 
 func New() *Assembler {
 	a := &Assembler{}
+	a.builtInReg = map[string]uint16{
+		"R0":     0,
+		"R1":     1,
+		"R2":     2,
+		"R3":     3,
+		"R4":     4,
+		"R5":     5,
+		"R6":     6,
+		"R7":     7,
+		"R8":     8,
+		"R9":     9,
+		"R10":    10,
+		"R11":    11,
+		"R12":    12,
+		"R13":    13,
+		"R14":    14,
+		"R15":    15,
+		"SCREEN": 16384,
+		"KBD":    24576,
+		"SP":     0,
+		"LCL":    1,
+		"ARG":    2,
+		"THIS":   3,
+		"THAT":   4,
+	}
 	a.destTable = map[string]uint16{
 		"M":   0b001000,
 		"D":   0b010000,
@@ -98,9 +124,14 @@ func skip(line string) bool {
 }
 
 func (a *Assembler) compile_a_instr(line string) ([]byte, error) {
-	val, err := strconv.Atoi(line[1:])
-	if err != nil {
-		return nil, fmt.Errorf("invalid A instruction, not a valid number(%s)", line)
+	val, exist := a.builtInReg[line[1:]]
+	if !exist {
+		_val, err := strconv.Atoi(line[1:])
+		if err == nil {
+			val = uint16(_val)
+		} else {
+			return nil, fmt.Errorf("invalid A instruction, not a valid number(%s), nor build-in register", line)
+		}
 	}
 
 	var ret uint16 = uint16(val & 0x7fff)
