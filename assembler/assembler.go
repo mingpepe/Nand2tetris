@@ -3,7 +3,7 @@ package assembler
 import (
 	"bufio"
 	"encoding/binary"
-	"errors"
+	"fmt"
 	"io"
 	"strconv"
 	"strings"
@@ -100,7 +100,7 @@ func skip(line string) bool {
 func (a *Assembler) compile_a_instr(line string) ([]byte, error) {
 	val, err := strconv.Atoi(line[1:])
 	if err != nil {
-		return nil, errors.New("invalid A instruction, not a valid number")
+		return nil, fmt.Errorf("invalid A instruction, not a valid number(%s)", line)
 	}
 
 	var ret uint16 = uint16(val & 0x7fff)
@@ -114,7 +114,7 @@ func (a *Assembler) compile_c_instr(line string) ([]byte, error) {
 	index0 := strings.Index(line, "=")
 	index1 := strings.Index(line, ";")
 	if index0 <= -1 {
-		return nil, errors.New("invalid C instruction, '=' is missing")
+		return nil, fmt.Errorf("invalid C instruction, '=' is missing(%s)", line)
 	}
 
 	dest := line[:index0]
@@ -132,7 +132,7 @@ func (a *Assembler) compile_c_instr(line string) ([]byte, error) {
 	if exist {
 		ret |= value
 	} else {
-		return nil, errors.New("unknown dest")
+		return nil, fmt.Errorf("unknown dest(dest = %s, line = %s)", dest, line)
 	}
 
 	if jump != "" {
@@ -140,7 +140,7 @@ func (a *Assembler) compile_c_instr(line string) ([]byte, error) {
 		if exist {
 			ret |= value
 		} else {
-			return nil, errors.New("unknown jump")
+			return nil, fmt.Errorf("unknown jump(jump = %s, line = %s)", jump, line)
 		}
 	}
 
@@ -148,7 +148,7 @@ func (a *Assembler) compile_c_instr(line string) ([]byte, error) {
 	if exist {
 		ret |= value
 	} else {
-		return nil, errors.New("unknown comp")
+		return nil, fmt.Errorf("unknown comp(comp = %s, line = %s)", comp, line)
 	}
 
 	buf := make([]byte, 2)
