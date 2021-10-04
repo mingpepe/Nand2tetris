@@ -14,6 +14,7 @@ type Assembler struct {
 	destTable  map[string]uint16
 	compTable  map[string]uint16
 	jumpTable  map[string]uint16
+	labels     map[string]uint16
 }
 
 func New() *Assembler {
@@ -91,21 +92,34 @@ func New() *Assembler {
 		"JLE": 0b110,
 		"JMP": 0b111,
 	}
+	a.labels = make(map[string]uint16)
 	return a
 }
 
 func (a *Assembler) Compile(reader io.Reader) ([]byte, error) {
 	buf := make([]byte, 0)
 	scanner := bufio.NewScanner(reader)
+	lines := make([]string, 0)
+	var lineCount uint16 = 0
 	for scanner.Scan() {
 		line := scanner.Text()
 		if !skip(line) {
-			binary, err := a.compileLine(line)
-			if err != nil {
-				return nil, err
+			lines = append(lines, line)
+			if strings.HasPrefix(line, "(") && strings.HasSuffix(line, ")") {
+				label := line[1 : len(line)-1]
+				a.labels[label] = lineCount
+				fmt.Printf("Add label %s, value = %d\n", label, lineCount)
 			}
-			buf = append(buf, binary...)
+			lineCount += 1
 		}
+	}
+
+	for _, line := range lines {
+		binary, err := a.compileLine(line)
+		if err != nil {
+			return nil, err
+		}
+		buf = append(buf, binary...)
 	}
 	return buf, nil
 }
@@ -126,11 +140,14 @@ func skip(line string) bool {
 func (a *Assembler) compile_a_instr(line string) ([]byte, error) {
 	val, exist := a.builtInReg[line[1:]]
 	if !exist {
-		_val, err := strconv.Atoi(line[1:])
-		if err == nil {
-			val = uint16(_val)
-		} else {
-			return nil, fmt.Errorf("invalid A instruction, not a valid number(%s), nor build-in register", line)
+		val, exist = a.labels[line[1:]]
+		if !exist {
+			_val, err := strconv.Atoi(line[1:])
+			if err == nil {
+				val = uint16(_val)
+			} else {
+				return nil, fmt.Errorf("invalid A instruction, not a valid number(%s), nor build-in register", line)
+			}
 		}
 	}
 
