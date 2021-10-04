@@ -157,6 +157,7 @@ func (a *Assembler) compile_c_instr(line string) ([]byte, error) {
 }
 
 func (a *Assembler) compileLine(line string) ([]byte, error) {
+	line = strings.TrimSpace(line)
 	if line[0] == '@' {
 		return a.compile_a_instr(line)
 	} else {
