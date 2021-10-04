@@ -188,6 +188,10 @@ func (a *Assembler) compile_c_instr(line string) ([]byte, error) {
 }
 
 func (a *Assembler) compileLine(line string) ([]byte, error) {
+	index := strings.Index(line, "//")
+	if index != -1 {
+		line = line[:index-1]
+	}
 	line = strings.TrimSpace(line)
 	if line[0] == '@' {
 		return a.compile_a_instr(line)
