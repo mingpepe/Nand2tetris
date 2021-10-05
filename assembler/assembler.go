@@ -45,6 +45,7 @@ func New() *Assembler {
 		"THAT":   4,
 	}
 	a.destTable = map[string]uint16{
+		"":    0b000000,
 		"M":   0b001000,
 		"D":   0b010000,
 		"DM":  0b011000,
@@ -84,6 +85,7 @@ func New() *Assembler {
 		"D|M": 0b1_010101_000000,
 	}
 	a.jumpTable = map[string]uint16{
+		"":    0b000,
 		"JGT": 0b001,
 		"JEQ": 0b010,
 		"JGE": 0b011,
@@ -161,19 +163,25 @@ func (a *Assembler) compile_c_instr(line string) ([]byte, error) {
 	var ret uint16 = 0xe000
 	index0 := strings.Index(line, "=")
 	index1 := strings.Index(line, ";")
-	if index0 <= -1 {
-		return nil, fmt.Errorf("invalid C instruction, '=' is missing(%s)", line)
-	}
 
-	dest := line[:index0]
+	dest := ""
 	comp := ""
 	jump := ""
-
-	if index1 > -1 {
-		jump = line[index1:]
-		comp = line[index0+1 : index1-1]
+	if index0 > -1 {
+		dest = line[:index0]
+		if index1 > -1 {
+			jump = line[index1:]
+			comp = line[:index1]
+		} else {
+			comp = line[index0+1:]
+		}
 	} else {
-		comp = line[index0+1:]
+		if index1 > -1 {
+			jump = line[index1+1:]
+			comp = line[:index1]
+		} else {
+			comp = line
+		}
 	}
 
 	value, exist := a.destTable[dest]
