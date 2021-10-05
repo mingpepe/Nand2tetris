@@ -10,11 +10,13 @@ import (
 )
 
 type Assembler struct {
-	builtInReg map[string]uint16
-	destTable  map[string]uint16
-	compTable  map[string]uint16
-	jumpTable  map[string]uint16
-	labels     map[string]uint16
+	builtInReg    map[string]uint16
+	destTable     map[string]uint16
+	compTable     map[string]uint16
+	jumpTable     map[string]uint16
+	labels        map[string]uint16
+	symbolTable   map[string]uint16
+	symbolAddress uint16
 }
 
 func New() *Assembler {
@@ -96,7 +98,16 @@ func New() *Assembler {
 		"JMP": 0b111,
 	}
 	a.labels = make(map[string]uint16)
+	a.symbolTable = make(map[string]uint16)
+	a.symbolAddress = 16
 	return a
+}
+
+func (a *Assembler) getNewSymboAddress(variable string) uint16 {
+	address := a.symbolAddress
+	a.symbolTable[variable] = address
+	a.symbolAddress++
+	return address
 }
 
 func (a *Assembler) Compile(reader io.Reader) ([]byte, error) {
@@ -142,15 +153,19 @@ func skip(line string) bool {
 }
 
 func (a *Assembler) compile_a_instr(line string) ([]byte, error) {
-	val, exist := a.builtInReg[line[1:]]
+	variable := line[1:]
+	val, exist := a.builtInReg[variable]
 	if !exist {
-		val, exist = a.labels[line[1:]]
+		val, exist = a.labels[variable]
 		if !exist {
-			_val, err := strconv.Atoi(line[1:])
+			_val, err := strconv.Atoi(variable)
 			if err == nil {
 				val = uint16(_val)
 			} else {
-				return nil, fmt.Errorf("invalid A instruction, not a valid number(%s), nor build-in register", line)
+				val, exist = a.symbolTable[variable]
+				if !exist {
+					val = a.getNewSymboAddress(variable)
+				}
 			}
 		}
 	}
