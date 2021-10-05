@@ -45,14 +45,14 @@ func New() *Assembler {
 		"THAT":   4,
 	}
 	a.destTable = map[string]uint16{
-		"":    0b000000,
-		"M":   0b001000,
-		"D":   0b010000,
-		"DM":  0b011000,
-		"A":   0b100000,
-		"AM":  0b101000,
-		"AD":  0b110000,
-		"ADM": 0b111000,
+		"":    0b000_000,
+		"M":   0b001_000,
+		"D":   0b010_000,
+		"DM":  0b011_000,
+		"A":   0b100_000,
+		"AM":  0b101_000,
+		"AD":  0b110_000,
+		"ADM": 0b111_000,
 	}
 	a.compTable = map[string]uint16{
 		// a = 0
