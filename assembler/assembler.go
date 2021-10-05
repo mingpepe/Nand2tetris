@@ -121,7 +121,6 @@ func (a *Assembler) Compile(reader io.Reader) ([]byte, error) {
 			if strings.HasPrefix(line, "(") && strings.HasSuffix(line, ")") {
 				label := line[1 : len(line)-1]
 				a.labelTable[label] = lineCount
-				fmt.Printf("Add label %s, value = %d\n", label, lineCount)
 			} else {
 				lines = append(lines, line)
 			}
