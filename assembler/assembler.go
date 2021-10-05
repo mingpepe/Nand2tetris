@@ -14,7 +14,7 @@ type Assembler struct {
 	destTable     map[string]uint16
 	compTable     map[string]uint16
 	jumpTable     map[string]uint16
-	labels        map[string]uint16
+	labelTable    map[string]uint16
 	symbolTable   map[string]uint16
 	symbolAddress uint16
 }
@@ -97,7 +97,7 @@ func New() *Assembler {
 		"JLE": 0b110,
 		"JMP": 0b111,
 	}
-	a.labels = make(map[string]uint16)
+	a.labelTable = make(map[string]uint16)
 	a.symbolTable = make(map[string]uint16)
 	a.symbolAddress = 16
 	return a
@@ -120,7 +120,7 @@ func (a *Assembler) Compile(reader io.Reader) ([]byte, error) {
 		if !skip(line) {
 			if strings.HasPrefix(line, "(") && strings.HasSuffix(line, ")") {
 				label := line[1 : len(line)-1]
-				a.labels[label] = lineCount
+				a.labelTable[label] = lineCount
 				fmt.Printf("Add label %s, value = %d\n", label, lineCount)
 			} else {
 				lines = append(lines, line)
@@ -156,7 +156,7 @@ func (a *Assembler) compile_a_instr(line string) ([]byte, error) {
 	variable := line[1:]
 	val, exist := a.builtInReg[variable]
 	if !exist {
-		val, exist = a.labels[variable]
+		val, exist = a.labelTable[variable]
 		if !exist {
 			_val, err := strconv.Atoi(variable)
 			if err == nil {
