@@ -14,3 +14,7 @@
 # Dependency directories (remove the comment below to include it)
 # vendor/
 .vscode/*
+
+# VM outputs for tset and verify
+projects/07/**/*.asm
+projects/08/**/*.asm
