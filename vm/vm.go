@@ -343,7 +343,7 @@ func get_arg1(line string) (string, error) {
 	// Should not call for C_RETURN
 	sep := strings.Split(line, " ")
 	if len(sep) < 2 {
-		return "", errors.New("unexpected data")
+		return "", errors.New("unexpected data(get_arg1) : " + line)
 	}
 	return sep[1], nil
 }
@@ -352,11 +352,11 @@ func get_arg2(line string) (int, error) {
 	// Only for C_PUSH, C_POP, C_FUNCTION, C_CALL
 	sep := strings.Split(line, " ")
 	if len(sep) != 3 {
-		return 0, errors.New("unexpected data")
+		return 0, errors.New("unexpected data(get_arg2) : " + line)
 	}
 	val, err := strconv.Atoi(sep[2])
 	if err != nil {
-		return -1, errors.New("unexpected data")
+		return -1, errors.New("unexpected data(get_arg2) : " + line)
 	}
 	return val, nil
 }
