@@ -44,6 +44,7 @@ func (vm *VM) Compile(reader io.Reader) (string, error) {
 	lines := make([]string, 0)
 	for scanner.Scan() {
 		line := scanner.Text()
+		line = strings.TrimSpace(line)
 		if !skip(line) {
 			lines = append(lines, line)
 		}
@@ -362,12 +363,10 @@ func get_arg2(line string) (int, error) {
 }
 
 func skip(line string) bool {
-	s := strings.TrimSpace(line)
-	if s == "" {
+	if line == "" {
 		return true
 	}
-
-	if strings.HasPrefix(s, "//") {
+	if strings.HasPrefix(line, "//") {
 		return true
 	}
 
