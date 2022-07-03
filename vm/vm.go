@@ -170,7 +170,7 @@ func (vm *VM) compile_line(line string) string {
 			if err != nil {
 				log.Fatal(err)
 			}
-			return fmt.Sprintf("(%s)", name)
+			return fmt.Sprintf("(%s)\n", name)
 		}
 	case C_GOTO:
 		{
