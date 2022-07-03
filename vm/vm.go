@@ -178,7 +178,7 @@ func (vm *VM) compile_line(line string) string {
 			if err != nil {
 				log.Fatal(err)
 			}
-			return fmt.Sprintf("@%s\n0;JNE\n", name)
+			return fmt.Sprintf("@%s\n0;JMP\n", name)
 		}
 	case C_IF:
 		{
