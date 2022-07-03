@@ -44,7 +44,7 @@ func main() {
 	fmt.Println(asm)
 
 	idx := strings.LastIndex(*filename, ".")
-	out_filename := (*filename)[:idx-1] + ".asm"
+	out_filename := (*filename)[:idx] + ".asm"
 
 	out_f, err := os.Create(out_filename)
 	if err != nil {
