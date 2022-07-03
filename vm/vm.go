@@ -28,12 +28,14 @@ const arithmeticTemplate1 = "@SP\n" +
 	"A=A-1\n"
 
 type VM struct {
-	arthJumpFlag int
+	arthJumpFlag  int
+	ret_label_cnt int
 }
 
 func New() *VM {
 	vm := new(VM)
 	vm.arthJumpFlag = 0
+	vm.ret_label_cnt = 0
 	return vm
 }
 
@@ -185,7 +187,38 @@ func (vm *VM) compile_line(line string) string {
 	case C_RETURN:
 		return returnTemplate()
 	case C_CALL:
-		return "not implement yet"
+		{
+			name, err := get_arg1(line)
+			if err != nil {
+				log.Fatal(err)
+			}
+			numArgs, err := get_arg2(line)
+			if err != nil {
+				log.Fatal(err)
+			}
+			newLabel := fmt.Sprintf("RETURN_LABEL%d", vm.ret_label_cnt)
+			vm.ret_label_cnt++
+			return fmt.Sprintf("@%s\nD=A\n@SP\nA=M\nM=D\n@SP\nM=M+1\n", newLabel) + // push return address
+				vm.push_template("LCL", 0, false) +
+				vm.push_template("ARG", 0, false) +
+				vm.push_template("THIS", 0, false) +
+				vm.push_template("THAT", 0, false) +
+				"@SP\n" +
+				"D=M\n" +
+				"@5\n" +
+				"D=D-A\n" +
+				"@" + strconv.Itoa(numArgs) + "\n" +
+				"D=D-A\n" +
+				"@ARG\n" +
+				"M=D\n" +
+				"@SP\n" +
+				"D=M\n" +
+				"@LCL\n" +
+				"M=D\n" +
+				"@" + name + "\n" +
+				"0;JMP\n" +
+				"(" + newLabel + ")\n"
+		}
 	}
 	return "unexpected return : " + line + "\n"
 }
