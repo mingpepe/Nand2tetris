@@ -44,6 +44,11 @@ func (vm *VM) Compile(reader io.Reader) (string, error) {
 	lines := make([]string, 0)
 	for scanner.Scan() {
 		line := scanner.Text()
+		// Remove comments
+		idx := strings.Index(line, "//")
+		if idx > 0 {
+			line = line[:idx]
+		}
 		line = strings.TrimSpace(line)
 		if !skip(line) {
 			lines = append(lines, line)
