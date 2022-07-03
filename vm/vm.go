@@ -138,23 +138,23 @@ func (vm *VM) compile_line(line string) string {
 		}
 		switch segment {
 		case "local":
-			return vm.pop_template("LCL", idx, true)
+			return pop_template("LCL", idx, true)
 		case "argument":
-			return vm.pop_template("ARG", idx, true)
+			return pop_template("ARG", idx, true)
 		case "this":
-			return vm.pop_template("THIS", idx, true)
+			return pop_template("THIS", idx, true)
 		case "that":
-			return vm.pop_template("THAT", idx, true)
+			return pop_template("THAT", idx, true)
 		case "temp":
-			return vm.pop_template("R5", idx+5, true)
+			return pop_template("R5", idx+5, true)
 		case "pointer":
 			if idx == 0 {
-				return vm.pop_template("THIS", idx, false)
+				return pop_template("THIS", idx, false)
 			} else if idx == 1 {
-				return vm.pop_template("THAT", idx, false)
+				return pop_template("THAT", idx, false)
 			}
 		case "static":
-			return vm.pop_template(fmt.Sprintf("%d", idx+16), idx, false)
+			return pop_template(fmt.Sprintf("%d", idx+16), idx, false)
 		}
 	case C_LABEL:
 		{
@@ -183,7 +183,7 @@ func (vm *VM) compile_line(line string) string {
 	case C_FUNCTION:
 		return "not implement yet"
 	case C_RETURN:
-		return vm.returnTemplate()
+		return returnTemplate()
 	case C_CALL:
 		return "not implement yet"
 	}
@@ -225,7 +225,7 @@ func (vm *VM) push_template(seg string, idx int, is_pointer bool) string {
 		"M=M+1\n"
 }
 
-func (vm *VM) pop_template(seg string, idx int, is_pointer bool) string {
+func pop_template(seg string, idx int, is_pointer bool) string {
 	pointer_code := "D=A\n"
 	if is_pointer {
 		pointer_code = fmt.Sprintf("D=M\n@%d\nD=D+A\n", idx)
@@ -336,7 +336,7 @@ func preFrameTemplate(position string) string {
 
 }
 
-func (vm *VM) returnTemplate() string {
+func returnTemplate() string {
 	return "@LCL\n" +
 		"D=M\n" +
 		"@R11\n" +
@@ -346,7 +346,7 @@ func (vm *VM) returnTemplate() string {
 		"D=M\n" +
 		"@R12\n" +
 		"M=D\n" +
-		vm.pop_template("ARG", 0, true) +
+		pop_template("ARG", 0, true) +
 		"@ARG\n" +
 		"D=M\n" +
 		"@SP\n" +
