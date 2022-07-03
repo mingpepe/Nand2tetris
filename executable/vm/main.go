@@ -42,4 +42,18 @@ func main() {
 	}
 
 	fmt.Println(asm)
+
+	idx := strings.LastIndex(*filename, ".")
+	out_filename := (*filename)[:idx-1] + ".asm"
+
+	out_f, err := os.Create(out_filename)
+	if err != nil {
+		log.Print(err.Error())
+	}
+	defer out_f.Close()
+	_, err = out_f.Write(asm)
+	if err != nil {
+		log.Print(err.Error())
+	}
+	f.Sync()
 }
