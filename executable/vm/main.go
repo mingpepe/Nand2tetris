@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"strings"
 
 	"github.com/mingpepe/Nand2teris/vm"
 )
@@ -20,6 +21,11 @@ func main() {
 
 	if !exist(*filename) {
 		log.Printf("file not found: %s", *filename)
+		return
+	}
+
+	if !strings.HasSuffix(*filename, ".vm") {
+		log.Printf("input must be a vm file")
 		return
 	}
 
