@@ -10,12 +10,19 @@ run_asm:assembler.exe
 	assembler.exe -f projects\06\pong\PongL.asm
 	assembler.exe -f projects\06\rect\RectL.asm
 	assembler.exe -f projects\06\rect\RectL.asm
-run_vm: vm.exe
+run_vm_7: vm.exe
 	vm.exe -f projects\07\MemoryAccess\BasicTest\BasicTest.vm
 	vm.exe -f projects\07\MemoryAccess\PointerTest\PointerTest.vm
 	vm.exe -f projects\07\MemoryAccess\StaticTest\StaticTest.vm
 	vm.exe -f projects\07\StackArithmetic\SimpleAdd\SimpleAdd.vm
 	vm.exe -f projects\07\StackArithmetic\StackTest\StackTest.vm
+run_vm_8: vm.exe
+	vm.exe -f projects\08\FunctionCalls\FibonacciElement\FibonacciElement.vm
+	vm.exe -f projects\08\FunctionCalls\NestedCall\NestedCall.vm
+	vm.exe -f projects\08\FunctionCalls\SimpleFunction\SimpleFunction.vm
+	vm.exe -f projects\08\FunctionCalls\StaticsTest\StaticsTest.vm
+	vm.exe -f projects\08\ProgramFlow\BasicLoop\BasicLoop.vm
+	vm.exe -f projects\08\ProgramFlow\FibonacciSeries\FibonacciSeries.vm
 assembler.exe: executable\assembler\main.go assembler\assembler.go
 	go build -o assembler.exe executable\assembler\main.go
 vm.exe: executable\vm\main.go vm\vm.go
