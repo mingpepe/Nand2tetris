@@ -157,8 +157,29 @@ func (vm *VM) compile_line(line string) string {
 			return vm.pop_template(fmt.Sprintf("%d", idx+16), idx, false)
 		}
 	case C_LABEL:
+		{
+			name, err := get_arg1(line)
+			if err != nil {
+				log.Fatal(err)
+			}
+			return fmt.Sprintf("(%s)", name)
+		}
 	case C_GOTO:
+		{
+			name, err := get_arg1(line)
+			if err != nil {
+				log.Fatal(err)
+			}
+			return fmt.Sprintf("@%s\n0;JNE\n", name)
+		}
 	case C_IF:
+		{
+			name, err := get_arg1(line)
+			if err != nil {
+				log.Fatal(err)
+			}
+			return fmt.Sprintf("%s@%s\nD;JNE\n", arithmeticTemplate1, name)
+		}
 	case C_FUNCTION:
 	case C_RETURN:
 	case C_CALL:
