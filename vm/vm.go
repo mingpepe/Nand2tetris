@@ -181,7 +181,9 @@ func (vm *VM) compile_line(line string) string {
 			return fmt.Sprintf("%s@%s\nD;JNE\n", arithmeticTemplate1, name)
 		}
 	case C_FUNCTION:
+		return "not implement yet"
 	case C_RETURN:
+		return vm.returnTemplate()
 	case C_CALL:
 		return "not implement yet"
 	}
@@ -322,4 +324,38 @@ func skip(line string) bool {
 	}
 
 	return false
+}
+
+func preFrameTemplate(position string) string {
+	return "@R11\n" +
+		"D=M-1\n" +
+		"AM=D\n" +
+		"D=M\n" +
+		"@" + position + "\n" +
+		"M=D\n"
+
+}
+
+func (vm *VM) returnTemplate() string {
+	return "@LCL\n" +
+		"D=M\n" +
+		"@R11\n" +
+		"M=D\n" +
+		"@5\n" +
+		"A=D-A\n" +
+		"D=M\n" +
+		"@R12\n" +
+		"M=D\n" +
+		vm.pop_template("ARG", 0, true) +
+		"@ARG\n" +
+		"D=M\n" +
+		"@SP\n" +
+		"M=D+1\n" +
+		preFrameTemplate("THAT") +
+		preFrameTemplate("THIS") +
+		preFrameTemplate("ARG") +
+		preFrameTemplate("LCL") +
+		"@R12\n" +
+		"A=M\n" +
+		"0;JMP\n"
 }
