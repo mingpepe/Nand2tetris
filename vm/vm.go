@@ -57,6 +57,7 @@ func (vm *VM) Compile(reader io.Reader) (string, error) {
 
 	asm := ""
 	for i := 0; i < len(lines); i++ {
+		asm += "//" + lines[i] + "\n"
 		asm += vm.compile_line(lines[i])
 	}
 	return asm, nil
