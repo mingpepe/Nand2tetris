@@ -2,7 +2,6 @@ package main
 
 import (
 	"flag"
-	"fmt"
 	"log"
 	"os"
 	"strings"
@@ -41,8 +40,6 @@ func main() {
 		log.Print(err.Error())
 	}
 
-	fmt.Println(asm)
-
 	idx := strings.LastIndex(*filename, ".")
 	out_filename := (*filename)[:idx] + ".asm"
 
@@ -51,7 +48,7 @@ func main() {
 		log.Print(err.Error())
 	}
 	defer out_f.Close()
-	_, err = out_f.Write(asm)
+	_, err = out_f.WriteString(asm)
 	if err != nil {
 		log.Print(err.Error())
 	}
