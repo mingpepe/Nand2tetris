@@ -11,7 +11,7 @@ run_asm:assembler.exe
 	assembler.exe -f projects\06\rect\RectL.asm
 	assembler.exe -f projects\06\rect\RectL.asm
 run_vm: vm.exe
-	vm.exe
+	vm.exe -f projects\07\MemoryAccess\BasicTest\BasicTest.vm
 assembler.exe: executable\assembler\main.go assembler\assembler.go
 	go build -o assembler.exe executable\assembler\main.go
 vm.exe: executable\vm\main.go vm\vm.go
