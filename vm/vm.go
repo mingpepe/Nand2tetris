@@ -183,7 +183,22 @@ func (vm *VM) compile_line(line string) string {
 			return fmt.Sprintf("%s@%s\nD;JNE\n", arithmeticTemplate1, name)
 		}
 	case C_FUNCTION:
-		return "not implement yet"
+		{
+			name, err := get_arg1(line)
+			if err != nil {
+				log.Fatal(err)
+			}
+			numArgs, err := get_arg2(line)
+			if err != nil {
+				log.Fatal(err)
+			}
+			tmp := fmt.Sprintf("(%s)\n", name)
+			for i := 0; i < numArgs; i++ {
+				// The same with push constant 0
+				tmp += fmt.Sprintf("@%d\nD=A\n@SP\nA=M\nM=D\n@SP\nM=M+1\n", 0)
+			}
+			return tmp
+		}
 	case C_RETURN:
 		return returnTemplate()
 	case C_CALL:
