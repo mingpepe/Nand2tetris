@@ -16,6 +16,7 @@ func exist(name string) bool {
 
 func main() {
 	var filename = flag.String("f", "input.vm", "input filename")
+	var bypass_bootstrap = flag.Bool("bypass", false, "bypass bootstrap code for test")
 	flag.Parse()
 
 	if !exist(*filename) {
@@ -35,6 +36,10 @@ func main() {
 	defer f.Close()
 
 	v := vm.New()
+	boolstrap := ""
+	if !*bypass_bootstrap {
+		boolstrap = v.BootstrapCode()
+	}
 	asm, err := v.Compile(f)
 	if err != nil {
 		log.Print(err.Error())
@@ -48,7 +53,7 @@ func main() {
 		log.Print(err.Error())
 	}
 	defer out_f.Close()
-	_, err = out_f.WriteString(asm)
+	_, err = out_f.WriteString(boolstrap + asm)
 	if err != nil {
 		log.Print(err.Error())
 	}
