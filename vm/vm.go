@@ -22,22 +22,22 @@ const (
 	C_CALL
 )
 
-const arithmeticTemplate1 = "@SP\n" +
+const arithmeticTemplate = "@SP\n" +
 	"AM=M-1\n" +
 	"D=M\n" +
 	"A=A-1\n"
 
 type VM struct {
-	arthJumpFlag     int
-	ret_label_cnt    int
-	current_filename string
+	arthJumpFlag    int
+	retLabelCnt     int
+	currentFilename string
 }
 
 func New() *VM {
 	vm := new(VM)
 	vm.arthJumpFlag = 0
-	vm.ret_label_cnt = 0
-	vm.current_filename = ""
+	vm.retLabelCnt = 0
+	vm.currentFilename = ""
 	return vm
 }
 
@@ -50,7 +50,7 @@ func (vm *VM) BootstrapCode() string {
 }
 
 func (vm *VM) Compile(filename string, reader io.Reader) (string, error) {
-	vm.current_filename = filename
+	vm.currentFilename = filename
 	scanner := bufio.NewScanner(reader)
 	lines := make([]string, 0)
 	for scanner.Scan() {
@@ -75,7 +75,7 @@ func (vm *VM) Compile(filename string, reader io.Reader) (string, error) {
 }
 
 func (vm *VM) compile_line(line string) string {
-	cmd_type, err := get_cmd_type(line)
+	cmd_type, err := getCmdType(line)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -84,43 +84,43 @@ func (vm *VM) compile_line(line string) string {
 		cmd := strings.Split(line, " ")[0]
 		switch cmd {
 		case "add":
-			return arithmeticTemplate1 + "M=M+D\n"
+			return arithmeticTemplate + "M=M+D\n"
 		case "sub":
-			return arithmeticTemplate1 + "M=M-D\n"
+			return arithmeticTemplate + "M=M-D\n"
 		case "and":
-			return arithmeticTemplate1 + "M=M&D\n"
+			return arithmeticTemplate + "M=M&D\n"
 		case "or":
-			return arithmeticTemplate1 + "M=M|D\n"
+			return arithmeticTemplate + "M=M|D\n"
 		case "not":
 			return "@SP\nA=M-1\nM=!M\n"
 		case "neg":
 			return "D=0\n@SP\nA=M-1\nM=D-M\n"
 		case "gt":
 			{
-				asm := vm.arithmeticTemplate2("JLE")
+				asm := generateArithCompareCode("JLE", vm.arthJumpFlag)
 				vm.arthJumpFlag++
 				return asm
 			}
 		case "lt":
 			{
-				asm := vm.arithmeticTemplate2("JGE")
+				asm := generateArithCompareCode("JGE", vm.arthJumpFlag)
 				vm.arthJumpFlag++
 				return asm
 			}
 		case "eq":
 			{
-				asm := vm.arithmeticTemplate2("JNE")
+				asm := generateArithCompareCode("JNE", vm.arthJumpFlag)
 				vm.arthJumpFlag++
 				return asm
 			}
 		}
 	case C_PUSH:
 		{
-			segment, err := get_arg1(line)
+			segment, err := getArg1(line)
 			if err != nil {
 				log.Fatal(err)
 			}
-			idx, err := get_arg2(line)
+			idx, err := getArg2(line)
 			if err != nil {
 				log.Fatal(err)
 			}
@@ -128,57 +128,57 @@ func (vm *VM) compile_line(line string) string {
 			case "constant":
 				return fmt.Sprintf("@%d\nD=A\n@SP\nA=M\nM=D\n@SP\nM=M+1\n", idx)
 			case "local":
-				return vm.push_template("LCL", idx, true)
+				return generatePointerPushCode("LCL", idx)
 			case "argument":
-				return vm.push_template("ARG", idx, true)
+				return generatePointerPushCode("ARG", idx)
 			case "this":
-				return vm.push_template("THIS", idx, true)
+				return generatePointerPushCode("THIS", idx)
 			case "that":
-				return vm.push_template("THAT", idx, true)
+				return generatePointerPushCode("THAT", idx)
 			case "temp":
-				return vm.push_template(fmt.Sprintf("%d", idx+5), idx, false)
+				return generateDirectPushCode(fmt.Sprintf("%d", idx+5))
 			case "pointer":
 				if idx == 0 {
-					return vm.push_template("THIS", idx, false)
+					return generateDirectPushCode("THIS")
 				} else if idx == 1 {
-					return vm.push_template("THAT", idx, false)
+					return generateDirectPushCode("THAT")
 				}
 			case "static":
-				return vm.push_template(fmt.Sprintf("%s.%d", vm.current_filename, idx), idx, false)
+				return generateDirectPushCode(fmt.Sprintf("%s.%d", vm.currentFilename, idx))
 			}
 		}
 	case C_POP:
-		segment, err := get_arg1(line)
+		segment, err := getArg1(line)
 		if err != nil {
 			log.Fatal(err)
 		}
-		idx, err := get_arg2(line)
+		idx, err := getArg2(line)
 		if err != nil {
 			log.Fatal(err)
 		}
 		switch segment {
 		case "local":
-			return pop_template("LCL", idx, true)
+			return generatePointerPopCode("LCL", idx)
 		case "argument":
-			return pop_template("ARG", idx, true)
+			return generatePointerPopCode("ARG", idx)
 		case "this":
-			return pop_template("THIS", idx, true)
+			return generatePointerPopCode("THIS", idx)
 		case "that":
-			return pop_template("THAT", idx, true)
+			return generatePointerPopCode("THAT", idx)
 		case "temp":
-			return pop_template(fmt.Sprintf("%d", idx+5), idx, false)
+			return generateDirectPopCode(fmt.Sprintf("%d", idx+5))
 		case "pointer":
 			if idx == 0 {
-				return pop_template("THIS", idx, false)
+				return generateDirectPopCode("THIS")
 			} else if idx == 1 {
-				return pop_template("THAT", idx, false)
+				return generateDirectPopCode("THAT")
 			}
 		case "static":
-			return pop_template(fmt.Sprintf("%s.%d", vm.current_filename, idx), idx, false)
+			return generateDirectPopCode(fmt.Sprintf("%s.%d", vm.currentFilename, idx))
 		}
 	case C_LABEL:
 		{
-			name, err := get_arg1(line)
+			name, err := getArg1(line)
 			if err != nil {
 				log.Fatal(err)
 			}
@@ -186,7 +186,7 @@ func (vm *VM) compile_line(line string) string {
 		}
 	case C_GOTO:
 		{
-			name, err := get_arg1(line)
+			name, err := getArg1(line)
 			if err != nil {
 				log.Fatal(err)
 			}
@@ -194,19 +194,19 @@ func (vm *VM) compile_line(line string) string {
 		}
 	case C_IF:
 		{
-			name, err := get_arg1(line)
+			name, err := getArg1(line)
 			if err != nil {
 				log.Fatal(err)
 			}
-			return fmt.Sprintf("%s@%s\nD;JNE\n", arithmeticTemplate1, name)
+			return fmt.Sprintf("%s@%s\nD;JNE\n", arithmeticTemplate, name)
 		}
 	case C_FUNCTION:
 		{
-			name, err := get_arg1(line)
+			name, err := getArg1(line)
 			if err != nil {
 				log.Fatal(err)
 			}
-			numArgs, err := get_arg2(line)
+			numArgs, err := getArg2(line)
 			if err != nil {
 				log.Fatal(err)
 			}
@@ -218,24 +218,24 @@ func (vm *VM) compile_line(line string) string {
 			return tmp
 		}
 	case C_RETURN:
-		return returnTemplate()
+		return generateReturnCode()
 	case C_CALL:
 		{
-			name, err := get_arg1(line)
+			name, err := getArg1(line)
 			if err != nil {
 				log.Fatal(err)
 			}
-			numArgs, err := get_arg2(line)
+			numArgs, err := getArg2(line)
 			if err != nil {
 				log.Fatal(err)
 			}
-			newLabel := fmt.Sprintf("RETURN_LABEL%d", vm.ret_label_cnt)
-			vm.ret_label_cnt++
+			newLabel := fmt.Sprintf("RETURN_LABEL%d", vm.retLabelCnt)
+			vm.retLabelCnt++
 			return fmt.Sprintf("@%s\nD=A\n@SP\nA=M\nM=D\n@SP\nM=M+1\n", newLabel) + // push return address
-				vm.push_template("LCL", 0, false) +
-				vm.push_template("ARG", 0, false) +
-				vm.push_template("THIS", 0, false) +
-				vm.push_template("THAT", 0, false) +
+				generateDirectPushCode("LCL") +
+				generateDirectPushCode("ARG") +
+				generateDirectPushCode("THIS") +
+				generateDirectPushCode("THAT") +
 				"@SP\n" +
 				"D=M\n" +
 				"@5\n" +
@@ -256,34 +256,30 @@ func (vm *VM) compile_line(line string) string {
 	return "unexpected return : " + line + "\n"
 }
 
-func (vm *VM) arithmeticTemplate2(_type string) string {
+func generateArithCompareCode(_type string, arthJumpFlag int) string {
 	return "@SP\n" +
 		"AM=M-1\n" +
 		"D=M\n" +
 		"A=A-1\n" +
 		"D=M-D\n" +
-		"@FALSE" + strconv.Itoa(vm.arthJumpFlag) + "\n" +
+		"@FALSE" + strconv.Itoa(arthJumpFlag) + "\n" +
 		"D;" + _type + "\n" +
 		"@SP\n" +
 		"A=M-1\n" +
 		"M=-1\n" +
-		"@CONTINUE" + strconv.Itoa(vm.arthJumpFlag) + "\n" +
+		"@CONTINUE" + strconv.Itoa(arthJumpFlag) + "\n" +
 		"0;JMP\n" +
-		"(FALSE" + strconv.Itoa(vm.arthJumpFlag) + ")\n" +
+		"(FALSE" + strconv.Itoa(arthJumpFlag) + ")\n" +
 		"@SP\n" +
 		"A=M-1\n" +
 		"M=0\n" +
-		"(CONTINUE" + strconv.Itoa(vm.arthJumpFlag) + ")\n"
+		"(CONTINUE" + strconv.Itoa(arthJumpFlag) + ")\n"
 }
 
-func (vm *VM) push_template(seg string, idx int, is_pointer bool) string {
-	pointer_code := ""
-	if is_pointer {
-		pointer_code = fmt.Sprintf("@%d\nA=D+A\nD=M\n", idx)
-	}
+func generatePointerPushCode(seg string, idx int) string {
 	return fmt.Sprintf("@%s\n", seg) +
 		"D=M\n" +
-		pointer_code +
+		fmt.Sprintf("@%d\nA=D+A\nD=M\n", idx) +
 		"@SP\n" +
 		"A=M\n" +
 		"M=D\n" +
@@ -291,13 +287,18 @@ func (vm *VM) push_template(seg string, idx int, is_pointer bool) string {
 		"M=M+1\n"
 }
 
-func pop_template(seg string, idx int, is_pointer bool) string {
-	pointer_code := "D=A\n"
-	if is_pointer {
-		pointer_code = fmt.Sprintf("D=M\n@%d\nD=D+A\n", idx)
-	}
+func generateDirectPushCode(seg string) string {
 	return fmt.Sprintf("@%s\n", seg) +
-		pointer_code +
+		"D=M\n" +
+		"@SP\n" +
+		"A=M\n" +
+		"M=D\n" +
+		"@SP\n" +
+		"M=M+1\n"
+}
+
+func generatePointerPopCode(seg string, idx int) string {
+	return fmt.Sprintf("@%s\nD=M\n@%d\nD=D+A\n", seg, idx) +
 		"@R13\n" +
 		"M=D\n" +
 		"@SP\n" +
@@ -308,7 +309,19 @@ func pop_template(seg string, idx int, is_pointer bool) string {
 		"M=D\n"
 }
 
-func get_cmd_type(line string) (int, error) {
+func generateDirectPopCode(seg string) string {
+	return fmt.Sprintf("@%s\nD=A\n", seg) +
+		"@R13\n" +
+		"M=D\n" +
+		"@SP\n" +
+		"AM=M-1\n" +
+		"D=M\n" +
+		"@R13\n" +
+		"A=M\n" +
+		"M=D\n"
+}
+
+func getCmdType(line string) (int, error) {
 	type_string := make([]string, 0)
 	type_val := make([]int, 0)
 	// Arithmetic
@@ -357,7 +370,7 @@ func get_cmd_type(line string) (int, error) {
 	return -1, errors.New("unknown cmd type : " + line)
 }
 
-func get_arg1(line string) (string, error) {
+func getArg1(line string) (string, error) {
 	// Should not call for C_RETURN
 	sep := strings.Split(line, " ")
 	if len(sep) < 2 {
@@ -366,7 +379,7 @@ func get_arg1(line string) (string, error) {
 	return sep[1], nil
 }
 
-func get_arg2(line string) (int, error) {
+func getArg2(line string) (int, error) {
 	// Only for C_PUSH, C_POP, C_FUNCTION, C_CALL
 	sep := strings.Split(line, " ")
 	if len(sep) != 3 {
@@ -399,7 +412,7 @@ func preFrameTemplate(position string) string {
 		"M=D\n"
 }
 
-func returnTemplate() string {
+func generateReturnCode() string {
 	return "@LCL\n" +
 		"D=M\n" +
 		"@R11\n" +
@@ -409,7 +422,7 @@ func returnTemplate() string {
 		"D=M\n" +
 		"@R12\n" +
 		"M=D\n" +
-		pop_template("ARG", 0, true) +
+		generatePointerPopCode("ARG", 0) +
 		"@ARG\n" +
 		"D=M\n" +
 		"@SP\n" +
