@@ -39,6 +39,14 @@ func New() *VM {
 	return vm
 }
 
+func (vm *VM) BootstrapCode() string {
+	tmp := "@256\n" +
+		"D=A\n" +
+		"@SP\n" +
+		"M=D\n"
+	return tmp + vm.compile_line("call Sys.init 0")
+}
+
 func (vm *VM) Compile(reader io.Reader) (string, error) {
 	scanner := bufio.NewScanner(reader)
 	lines := make([]string, 0)
