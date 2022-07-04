@@ -28,14 +28,16 @@ const arithmeticTemplate1 = "@SP\n" +
 	"A=A-1\n"
 
 type VM struct {
-	arthJumpFlag  int
-	ret_label_cnt int
+	arthJumpFlag     int
+	ret_label_cnt    int
+	current_filename string
 }
 
 func New() *VM {
 	vm := new(VM)
 	vm.arthJumpFlag = 0
 	vm.ret_label_cnt = 0
+	vm.current_filename = ""
 	return vm
 }
 
@@ -47,7 +49,8 @@ func (vm *VM) BootstrapCode() string {
 	return tmp + vm.compile_line("call Sys.init 0")
 }
 
-func (vm *VM) Compile(reader io.Reader) (string, error) {
+func (vm *VM) Compile(filename string, reader io.Reader) (string, error) {
+	vm.current_filename = filename
 	scanner := bufio.NewScanner(reader)
 	lines := make([]string, 0)
 	for scanner.Scan() {
@@ -141,7 +144,7 @@ func (vm *VM) compile_line(line string) string {
 					return vm.push_template("THAT", idx, false)
 				}
 			case "static":
-				return vm.push_template(fmt.Sprintf("%d", idx+16), idx, false)
+				return vm.push_template(fmt.Sprintf("%s.%d", vm.current_filename, idx), idx, false)
 			}
 		}
 	case C_POP:
@@ -171,7 +174,7 @@ func (vm *VM) compile_line(line string) string {
 				return pop_template("THAT", idx, false)
 			}
 		case "static":
-			return pop_template(fmt.Sprintf("%d", idx+16), idx, false)
+			return pop_template(fmt.Sprintf("%s.%d", vm.current_filename, idx), idx, false)
 		}
 	case C_LABEL:
 		{

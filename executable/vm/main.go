@@ -15,6 +15,13 @@ func exist(name string) bool {
 	return err == nil
 }
 
+func get_filename_without_ext(filepath string) string {
+	idx := strings.LastIndex(filepath, "\\")
+	filepath = filepath[idx+1:]
+	idx = strings.LastIndex(filepath, ".")
+	return filepath[:idx]
+}
+
 func main() {
 	var filename = flag.String("f", "input.vm", "input filename")
 	var bypass_bootstrap = flag.Bool("bypass", false, "bypass bootstrap code for test")
@@ -58,13 +65,15 @@ func main() {
 		code += v.BootstrapCode()
 	}
 
-	for _, _filename := range filenames {
-		f, err := os.Open(_filename)
+	for _, filepath := range filenames {
+		f, err := os.Open(filepath)
 		if err != nil {
 			log.Fatal(err)
 		}
 		defer f.Close()
-		asm, err := v.Compile(f)
+
+		_filename := get_filename_without_ext(filepath)
+		asm, err := v.Compile(_filename, f)
 		if err != nil {
 			log.Print(err.Error())
 		}
