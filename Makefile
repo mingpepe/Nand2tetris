@@ -23,6 +23,13 @@ run_vm_8: vm.exe
 	vm.exe -d projects\08\FunctionCalls\StaticsTest
 	vm.exe -bypass=true -f projects\08\ProgramFlow\BasicLoop\BasicLoop.vm
 	vm.exe -bypass=true -f projects\08\ProgramFlow\FibonacciSeries\FibonacciSeries.vm
+run_vm_8_v: vm.exe
+	vm.exe -v=true -d projects\08\FunctionCalls\FibonacciElement
+	vm.exe -v=true -bypass=true -d projects\08\FunctionCalls\NestedCall
+	vm.exe -v=true -bypass=true -f projects\08\FunctionCalls\SimpleFunction\SimpleFunction.vm
+	vm.exe -v=true -d projects\08\FunctionCalls\StaticsTest
+	vm.exe -v=true -bypass=true -f projects\08\ProgramFlow\BasicLoop\BasicLoop.vm
+	vm.exe -v=true -bypass=true -f projects\08\ProgramFlow\FibonacciSeries\FibonacciSeries.vm
 assembler.exe: executable\assembler\main.go assembler\assembler.go
 	go build -o assembler.exe executable\assembler\main.go
 vm.exe: executable\vm\main.go vm\vm.go
