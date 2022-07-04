@@ -133,7 +133,7 @@ func (vm *VM) compile_line(line string) string {
 			case "that":
 				return vm.push_template("THAT", idx, true)
 			case "temp":
-				return vm.push_template("R5", idx+5, true)
+				return vm.push_template(fmt.Sprintf("%d", idx+5), idx, false)
 			case "pointer":
 				if idx == 0 {
 					return vm.push_template("THIS", idx, false)
@@ -163,7 +163,7 @@ func (vm *VM) compile_line(line string) string {
 		case "that":
 			return pop_template("THAT", idx, true)
 		case "temp":
-			return pop_template("R5", idx+5, true)
+			return pop_template(fmt.Sprintf("%d", idx+5), idx, false)
 		case "pointer":
 			if idx == 0 {
 				return pop_template("THIS", idx, false)
