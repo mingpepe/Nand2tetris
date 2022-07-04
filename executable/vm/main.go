@@ -26,6 +26,7 @@ func main() {
 	var filename = flag.String("f", "input.vm", "input filename")
 	var bypass_bootstrap = flag.Bool("bypass", false, "bypass bootstrap code for test")
 	var directory = flag.String("d", "", "directory contains vm files")
+	var verbose = flag.Bool("v", false, "output detail")
 	flag.Parse()
 
 	filenames := make([]string, 0)
@@ -62,6 +63,9 @@ func main() {
 	v := vm.New()
 	code := ""
 	if !*bypass_bootstrap {
+		if *verbose {
+			log.Println("Write bootstrap code")
+		}
 		code += v.BootstrapCode()
 	}
 
@@ -71,6 +75,10 @@ func main() {
 			log.Fatal(err)
 		}
 		defer f.Close()
+
+		if *verbose {
+			log.Printf("Compile %s\n", filepath)
+		}
 
 		_filename := get_filename_without_ext(filepath)
 		asm, err := v.Compile(_filename, f)
@@ -96,5 +104,8 @@ func main() {
 	_, err = out_f.WriteString(code)
 	if err != nil {
 		log.Print(err.Error())
+	}
+	if *verbose {
+		log.Printf("Output to %s\n", out_filename)
 	}
 }
