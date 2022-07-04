@@ -75,11 +75,11 @@ func (vm *VM) Compile(filename string, reader io.Reader) (string, error) {
 }
 
 func (vm *VM) compile_line(line string) string {
-	type1, err := get_cmd_type(line)
+	cmd_type, err := get_cmd_type(line)
 	if err != nil {
 		log.Fatal(err)
 	}
-	switch type1 {
+	switch cmd_type {
 	case C_ARITHMETIC:
 		cmd := strings.Split(line, " ")[0]
 		switch cmd {
@@ -397,7 +397,6 @@ func preFrameTemplate(position string) string {
 		"D=M\n" +
 		"@" + position + "\n" +
 		"M=D\n"
-
 }
 
 func returnTemplate() string {

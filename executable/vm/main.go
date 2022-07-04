@@ -96,6 +96,7 @@ func main() {
 		dir_name := (*directory)[idx+1:]
 		out_filename = *directory + "\\" + dir_name + ".asm"
 	}
+
 	out_f, err := os.Create(out_filename)
 	if err != nil {
 		log.Print(err.Error())
@@ -105,6 +106,7 @@ func main() {
 	if err != nil {
 		log.Print(err.Error())
 	}
+
 	if *verbose {
 		log.Printf("Output to %s\n", out_filename)
 	}
