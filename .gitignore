@@ -21,3 +21,6 @@ projects/08/**/*.asm
 
 # tool generated files
 *.dat
+
+
+projects/12/**/*.vm
