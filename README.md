@@ -15,22 +15,34 @@ Data in directory `doc`, `projects`, `tools` all comes from the official site
 - [ ] Project 12 OS
 
 
+## Size
+* Stack : 1792
+* Heap : 1433
+* Screen : 8192
+* Keyboard : 1
 ## Hack RAM layout
 
-0000 &ensp;|&ensp;&ensp;&ensp;&ensp;| &ensp;SP \
-0001 &ensp;|&ensp;&ensp;&ensp;&ensp;| &ensp;LCL \
-0002 &ensp;|&ensp;&ensp;&ensp;&ensp;| &ensp;ARG \
-0003 &ensp;|&ensp;&ensp;&ensp;&ensp;| &ensp;THIS \
-0004 &ensp;|&ensp;&ensp;&ensp;&ensp;| &ensp;THAT \
-0005 &ensp;|&ensp;&ensp;&ensp;&ensp;| &ensp;Temp start \
-.......... &ensp;|&ensp;&ensp;&ensp;&ensp;| &ensp;\
-0012 &ensp;|&ensp;&ensp;&ensp;&ensp;| &ensp;Temp end\
-0013 &ensp;|&ensp;&ensp;&ensp;&ensp;| &ensp;General start\
-.......... &ensp;|&ensp;&ensp;&ensp;&ensp;| &ensp;\
-0015 &ensp;|&ensp;&ensp;&ensp;&ensp;| &ensp;General end\
-0016 &ensp;|&ensp;&ensp;&ensp;&ensp;| &ensp;Static start\
-.......... &ensp;|&ensp;&ensp;&ensp;&ensp;| &ensp;\
-0255 &ensp;|&ensp;&ensp;&ensp;&ensp;| &ensp;Static end\
-0256 &ensp;|&ensp;&ensp;&ensp;&ensp;| &ensp;Stack start\
-.......... &ensp;|&ensp;&ensp;&ensp;&ensp;| &ensp;\
-2047 &ensp;|&ensp;&ensp;&ensp;&ensp;| &ensp;Stack end
+00000 &ensp;|&ensp;&ensp;&ensp;&ensp;| &ensp;SP \
+00001 &ensp;|&ensp;&ensp;&ensp;&ensp;| &ensp;LCL \
+00002 &ensp;|&ensp;&ensp;&ensp;&ensp;| &ensp;ARG \
+00003 &ensp;|&ensp;&ensp;&ensp;&ensp;| &ensp;THIS \
+00004 &ensp;|&ensp;&ensp;&ensp;&ensp;| &ensp;THAT \
+00005 &ensp;|&ensp;&ensp;&ensp;&ensp;| &ensp;Temp \
+..............&ensp;|&ensp;&ensp;&ensp;&ensp;| &ensp; \
+00013 &ensp;|&ensp;&ensp;&ensp;&ensp;| &ensp;General \
+..............&ensp;|&ensp;&ensp;&ensp;&ensp;| &ensp; \
+00016 &ensp;|&ensp;&ensp;&ensp;&ensp;| &ensp;Static \
+..............&ensp;|&ensp;&ensp;&ensp;&ensp;| &ensp; \
+00256 &ensp;|&ensp;&ensp;&ensp;&ensp;| &ensp;Stack \
+..............&ensp;|&ensp;&ensp;&ensp;&ensp;| &ensp; \
+..............&ensp;|&ensp;&ensp;&ensp;&ensp;| &ensp; \
+02048 &ensp;|&ensp;&ensp;&ensp;&ensp;| &ensp;Heap \
+..............&ensp;|&ensp;&ensp;&ensp;&ensp;| &ensp; \
+..............&ensp;|&ensp;&ensp;&ensp;&ensp;| &ensp; \
+..............&ensp;|&ensp;&ensp;&ensp;&ensp;| &ensp; \
+16384 &ensp;|&ensp;&ensp;&ensp;&ensp;| &ensp;Screen\
+..............&ensp;|&ensp;&ensp;&ensp;&ensp;| &ensp;\
+..............&ensp;|&ensp;&ensp;&ensp;&ensp;| &ensp; \
+..............&ensp;|&ensp;&ensp;&ensp;&ensp;| &ensp; \
+..............&ensp;|&ensp;&ensp;&ensp;&ensp;| &ensp; \
+24576 &ensp;|&ensp;&ensp;&ensp;&ensp;| &ensp;Keyboard
