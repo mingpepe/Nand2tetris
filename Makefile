@@ -42,3 +42,4 @@ myapp: MyApp\DirectRAM\Main.jack MyApp\Helloworld\Main.jack MyApp\Error\Main.jac
 os:
 	tools\JackCompiler.bat projects\12\MemoryTest
 	tools\JackCompiler.bat projects\12\KeyboardTest
+	tools\JackCompiler.bat projects\12\StringTest

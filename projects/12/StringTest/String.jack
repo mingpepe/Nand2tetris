@@ -1,0 +1,155 @@
+// This file is part of www.nand2tetris.org
+// and the book "The Elements of Computing Systems"
+// by Nisan and Schocken, MIT Press.
+// File name: projects/12/String.jack
+
+/**
+ * Represents character strings. In addition for constructing and disposing
+ * strings, the class features methods for getting and setting individual
+ * characters of the string, for erasing the string's last character,
+ * for appending a character to the string's end, and more typical
+ * string-oriented operations.
+ */
+class String {
+    field Array buf;
+    field int len;
+    field boolean empty;
+    /** constructs a new empty string with a maximum length of maxLength
+     *  and initial length of 0. */
+    constructor String new(int maxLength) {
+        if (maxLength = 0) {
+            let empty = true;
+        } else {
+            let empty = false;
+            let buf = Array.new(maxLength);
+        }
+        let len = 0;
+        return this;
+    }
+
+    /** Disposes this string. */
+    method void dispose() {
+        if (!empty) {
+            do buf.dispose();
+        }
+        return;
+    }
+
+    /** Returns the current length of this string. */
+    method int length() {
+        return len;
+    }
+
+    /** Returns the character at the j-th location of this string. */
+    method char charAt(int j) {
+        return buf[j];
+    }
+
+    /** Sets the character at the j-th location of this string to c. */
+    method void setCharAt(int j, char c) {
+        let buf[j] = c;
+        return;
+    }
+
+    /** Appends c to this string's end and returns this string. */
+    method String appendChar(char c) {
+        let buf[len] = c;
+        let len = len + 1;
+        return this;
+    }
+
+    /** Erases the last character from this string. */
+    method void eraseLastChar() {
+        let len = len - 1;
+        return;
+    }
+
+    /** Returns the integer value of this string, 
+     *  until a non-digit character is detected. */
+    method int intValue() {
+        var int i;
+        var int val;
+        var boolean neg;
+        let i = 0;
+        let val = 0;
+        // Sign
+        if (buf[i] = 45) {
+            let neg = true;
+            let i = 1;
+        } else {
+            let neg = false;
+        }
+        while (i < len) {
+            // '0' = 48
+            // '9' = 57
+            // Does not support <=, hence we adjust the bound
+            if (((48 - 1) < buf[i]) & (buf[i] < (57 + 1))) {
+                let val = val * 10;
+                let val = val + (buf[i] - 48);
+            } else {
+                let i = len; // simulate break
+            }
+            let i = i + 1;
+        }
+        if (neg) {
+            let val = -val;
+        }
+        return val;
+    }
+
+    /** Sets this string to hold a representation of the given value. */
+    method void setInt(int val) {
+        var int i;
+        var String tmp;
+        var boolean neg;
+        var int offset;
+        if (val < 0) {
+            let neg = true;
+            let offset = 1;
+            let val = -val;
+            let buf[0] = 45; // '-'
+        } else {
+            let neg = false;
+            let offset = 0;
+        }
+        let tmp = int2String(val);
+        let i = 0;
+        while (i < tmp.length()) {
+            let buf[i + offset] = tmp.charAt(i);
+            let i = i + 1;
+        }
+        let len = i + offset;
+        do tmp.dispose();
+        return;
+    }
+
+    method String int2String(int val) {
+        var String str;
+        var int digit;
+        let digit = val - ((val / 10) * 10);
+        if (val < 10) {
+            let str = String.new(30);
+            do str.appendChar(48 + digit);
+            return str;
+        } else {
+            let str = int2String(val / 10);
+            do str.appendChar(48 + digit);
+            return str;
+        }
+    }
+
+    /** Returns the new line character. */
+    function char newLine() {
+        return 128;
+    }
+
+    /** Returns the backspace character. */
+    function char backSpace() {
+        return 129;
+    }
+
+    /** Returns the double quote (") character. */
+    function char doubleQuote() {
+        return 34;
+    }
+}
