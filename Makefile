@@ -44,3 +44,4 @@ os:
 	tools\JackCompiler.bat projects\12\KeyboardTest
 	tools\JackCompiler.bat projects\12\StringTest
 	tools\JackCompiler.bat projects\12\ArrayTest
+	tools\JackCompiler.bat projects\12\SysTest
