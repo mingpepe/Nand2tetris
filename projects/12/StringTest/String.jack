@@ -29,7 +29,7 @@ class String {
 
     /** Disposes this string. */
     method void dispose() {
-        if (!empty) {
+        if (~empty) {
             do buf.dispose();
         }
         return;
