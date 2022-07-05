@@ -9,7 +9,7 @@ Data in directory `doc`, `projects`, `tools` all comes from the official site
 - [x] Project 6 Assembly
 - [x] Project 7 VM 1
 - [x] Project 8 VM 2
-- [ ] Project 9 Programming language
+- [x] Project 9 Programming language
 - [ ] Project 10 Compiler 1
 - [ ] Project 11 Compiler 2
 - [ ] Project 12 OS
