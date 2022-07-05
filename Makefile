@@ -39,3 +39,5 @@ myapp: MyApp\DirectRAM\Main.jack MyApp\Helloworld\Main.jack MyApp\Error\Main.jac
 	tools\JackCompiler.bat MyApp\Helloworld
 	tools\JackCompiler.bat MyApp\Error
 	tools\JackCompiler.bat MyApp\Shell
+os:
+	tools\JackCompiler.bat projects\12\MemoryTest
