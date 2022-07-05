@@ -34,3 +34,8 @@ assembler.exe: executable\assembler\main.go assembler\assembler.go
 	go build -o assembler.exe executable\assembler\main.go
 vm.exe: executable\vm\main.go vm\vm.go
 	go build -o vm.exe executable\vm\main.go
+myapp: MyApp\DirectRAM\Main.jack MyApp\Helloworld\Main.jack MyApp\Error\Main.jack MyApp\Shell\Main.jack
+	tools\JackCompiler.bat MyApp\DirectRAM
+	tools\JackCompiler.bat MyApp\Helloworld
+	tools\JackCompiler.bat MyApp\Error
+	tools\JackCompiler.bat MyApp\Shell
