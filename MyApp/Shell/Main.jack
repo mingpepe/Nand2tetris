@@ -1,0 +1,51 @@
+class Main {
+    function void main() {
+        var String input;
+        var String tmp;
+        var int i;
+
+        let tmp = String.new(10);
+        while (true) {
+            let input = Keyboard.readLine(">> ");
+            if (Main.string_compare(input, "CLS")) {
+                do Screen.clearScreen();
+                do Output.moveCursor(0, 0);
+            } else {
+                if (Main.string_compare(input, "LS")) {
+                    let i = 0;
+                    while (i < 5) {
+                        do tmp.setInt(i);
+                        do Output.printString(tmp);
+                        do Output.println();
+                        let i = i + 1;
+                    }
+                } else {
+                    do Output.printString("Unknown cmd");
+                    do Output.println();
+                }
+            }
+
+            //
+            do Sys.wait(1);
+
+        }
+        return;
+    }
+
+    function bool string_compare(String a, String b) {
+        var int i;
+
+        if (~(a.length() = b.length())) {
+            return false;
+        }
+        let i = 0;
+        while (i < a.length()) {
+            if (~(a.charAt(i) = b.charAt(i))) {
+                return false;
+            }
+            let i = i + 1;
+        }
+
+        return true;
+    }
+}
