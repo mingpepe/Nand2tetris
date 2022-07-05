@@ -1,0 +1,6 @@
+class Main {
+    function void main() {
+        do Sys.wait(-1);
+        return;
+    }
+}

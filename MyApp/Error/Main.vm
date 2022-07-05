@@ -1,0 +1,7 @@
+function Main.main 0
+push constant 1
+neg
+call Sys.wait 1
+pop temp 0
+push constant 0
+return
