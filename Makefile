@@ -46,3 +46,4 @@ os:
 	tools\JackCompiler.bat projects\12\ArrayTest
 	tools\JackCompiler.bat projects\12\SysTest
 	tools\JackCompiler.bat projects\12\MathTest
+	tools\JackCompiler.bat projects\12\OutputTest
