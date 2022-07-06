@@ -12,7 +12,7 @@ Data in directory `doc`, `projects`, `tools` all comes from the official site
 - [x] Project 9 Programming language
 - [ ] Project 10 Compiler 1
 - [ ] Project 11 Compiler 2
-- [ ] Project 12 OS
+- [x] Project 12 OS
 
 
 ## Size
