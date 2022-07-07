@@ -48,3 +48,6 @@ os:
 	tools\JackCompiler.bat projects\12\MathTest
 	tools\JackCompiler.bat projects\12\OutputTest
 	tools\JackCompiler.bat projects\12\ScreenTest
+os_test_app:
+	python copy_os_for_test.py
+	tools\JackCompiler.bat projects\11\Pong
