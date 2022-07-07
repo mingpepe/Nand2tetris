@@ -1,4 +1,4 @@
-package tokenizer
+package analyzer
 
 const (
 	KEYWORD int = iota
