@@ -51,5 +51,5 @@ os:
 os_test_app:
 	python copy_os_for_test.py
 	tools\JackCompiler.bat projects\11\Pong
-analyzer.exe: executable\analyzer\main.go analyzer\analyzer.go
+analyzer.exe: executable\analyzer\main.go analyzer\tokenizer.go
 	go build -o analyzer.exe executable\analyzer\main.go
