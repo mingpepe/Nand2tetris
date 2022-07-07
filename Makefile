@@ -53,3 +53,6 @@ os_test_app:
 	tools\JackCompiler.bat projects\11\Pong
 analyzer.exe: executable\analyzer\main.go analyzer\tokenizer.go analyzer\compilation_engine.go
 	go build -o analyzer.exe executable\analyzer\main.go
+test_analyzer: analyzer.exe
+	analyzer.exe -f projects\10\ArrayTest\Main.jack
+	tools\TextComparer.bat projects\10\ArrayTest\Main_KM.xml projects\10\ArrayTest\MainT.xml

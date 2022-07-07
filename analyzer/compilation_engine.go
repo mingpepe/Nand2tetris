@@ -3,12 +3,13 @@ package analyzer
 import "io"
 
 type CompilationEngine struct {
-	reader io.Reader
-	writer io.Writer
+	tokenizer Tokenizer
+	writer    io.Writer
 }
 
-func New(reader io.Reader, writer io.Writer) *CompilationEngine {
+func NewCompilationEngine(tokenizer Tokenizer, writer io.Writer) *CompilationEngine {
 	c := &CompilationEngine{}
+	c.tokenizer = tokenizer
 	return c
 }
 

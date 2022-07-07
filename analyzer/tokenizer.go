@@ -1,13 +1,22 @@
 package analyzer
 
-const (
-	KEYWORD int = iota
-	SYMBOL
-	IDENTIFIER
-	INT_CONST
-	STRING_CONST
+import (
+	"bufio"
+	"io"
+	"strconv"
+	"strings"
 )
 
+// Token type
+const (
+	KEYWORD      = "keyword"
+	SYMBOL       = "symbol"
+	IDENTIFIER   = "identifier"
+	INT_CONST    = "integerConstant"
+	STRING_CONST = "stringConstant"
+)
+
+// Keyword
 const (
 	CLASS int = iota
 	METHOD
@@ -32,37 +41,157 @@ const (
 	THIS
 )
 
+var keywords = []string{"class", "method", "function",
+	"constructor", "int", "boolean",
+	"char", "void", "var", "static",
+	"field", "let", "do", "if",
+	"else", "while", "return", "true",
+	"false", "null", "this"}
+
+const symbols = "{}()[].,;+-*/&|<>=~"
+
+const sep = " \t\r\n"
+
 type Tokenizer struct {
+	reader io.Reader
+	tokens []string
+	ptr    int
 }
 
-func (t *Tokenizer) hasMoreTokens() bool {
-	return true
+func NewTokenAnalyzer(reader io.Reader) *Tokenizer {
+	t := &Tokenizer{}
+	t.reader = reader
+	t.tokens = make([]string, 0)
+	t.ptr = 0
+	return t
 }
 
-func (t *Tokenizer) advance() {
+func (t *Tokenizer) Parse() {
+	buf := make([]rune, 0)
+	ptr := 0
+	scanner := bufio.NewScanner(t.reader)
+	for scanner.Scan() {
+		line := scanner.Text()
+		line = strings.TrimSpace(line)
+		if strings.HasPrefix(line, "//") {
+			continue
+		}
 
+		if strings.HasPrefix(line, "/*") {
+			if strings.HasSuffix(line, "*/") {
+				continue
+			} else {
+				println("Todo : handle corss line comments")
+			}
+		}
+		// Does not handle cross line string
+		string_start_flag := false
+		for _, b := range line {
+			if string_start_flag {
+				buf = append(buf, b)
+				ptr++
+				if b == '"' {
+					string_start_flag = false
+					s := string(buf[:ptr])
+					t.tokens = append(t.tokens, s)
+					ptr = 0
+					buf = make([]rune, 0)
+				}
+			} else {
+				if strings.Contains(sep, string(b)) {
+					if ptr != 0 {
+						s := string(buf[:ptr])
+						t.tokens = append(t.tokens, s)
+						ptr = 0
+						buf = make([]rune, 0)
+					}
+				} else if strings.Contains(symbols, string(b)) {
+					if ptr != 0 {
+						s := string(buf[:ptr])
+						t.tokens = append(t.tokens, s)
+						ptr = 0
+						buf = make([]rune, 0)
+					}
+					t.tokens = append(t.tokens, string(b))
+				} else {
+					buf = append(buf, b)
+					ptr++
+					if b == '"' {
+						string_start_flag = true
+					}
+				}
+			}
+
+		}
+		if ptr != 0 {
+			s := string(buf[:ptr])
+			t.tokens = append(t.tokens, s)
+			ptr = 0
+			buf = make([]rune, 0)
+		}
+	}
 }
 
-func (t *Tokenizer) tokenType() int {
-	return KEYWORD
+func (t *Tokenizer) HasMoreTokens() bool {
+	return t.ptr < len(t.tokens)
 }
 
-func (t *Tokenizer) keyword() int {
+func (t *Tokenizer) Advance() {
+	t.ptr++
+}
+
+func (t *Tokenizer) CurrentToken() string {
+	token := t.tokens[t.ptr]
+	if t.TokenType() == STRING_CONST {
+		length := len(token)
+		token = token[1 : length-2]
+	} else if token == "<" {
+		token = "&lt;"
+	} else if token == ">" {
+		token = "&gt;"
+	}
+	return token
+}
+
+func (t *Tokenizer) TokenType() string {
+	token := t.tokens[t.ptr]
+	if strings.HasPrefix(token, "\"") {
+		return STRING_CONST
+	}
+
+	if strings.Contains(symbols, token) {
+		return SYMBOL
+	}
+
+	for _, keyword := range keywords {
+		if token == keyword {
+			return KEYWORD
+		}
+	}
+
+	_, err := strconv.Atoi(token)
+	if err == nil {
+		return INT_CONST
+	}
+	return IDENTIFIER
+}
+
+func (t *Tokenizer) Keyword() int {
 	return CLASS
 }
 
-func (t *Tokenizer) symbol() byte {
+func (t *Tokenizer) Symbol() byte {
 	return 0
 }
 
-func (t *Tokenizer) identifier() string {
+func (t *Tokenizer) Identifier() string {
 	return ""
 }
 
-func (t *Tokenizer) intVal() int {
+func (t *Tokenizer) IntVal() int {
 	return 0
 }
 
-func (t *Tokenizer) stringVal() string {
+func (t *Tokenizer) StringVal() string {
 	return ""
 }
