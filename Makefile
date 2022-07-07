@@ -1,4 +1,4 @@
-all:assembler.exe vm.exe
+all:assembler.exe vm.exe analyzer.exe
 	
 run:
 	assembler.exe -f projects\06\add\Add.asm
@@ -51,3 +51,5 @@ os:
 os_test_app:
 	python copy_os_for_test.py
 	tools\JackCompiler.bat projects\11\Pong
+analyzer.exe: executable\analyzer\main.go analyzer\analyzer.go
+	go build -o analyzer.exe executable\analyzer\main.go
