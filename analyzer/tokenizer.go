@@ -84,6 +84,12 @@ func (t *Tokenizer) Parse() {
 				println("Todo : handle corss line comments")
 			}
 		}
+
+		idx := strings.Index(line, "//")
+		if idx != -1 {
+			line = line[:idx]
+		}
+
 		// Does not handle cross line string
 		string_start_flag := false
 		for _, b := range line {
