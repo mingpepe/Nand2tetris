@@ -25,3 +25,6 @@ projects/08/**/*.asm
 projects/10/**/*.vm
 projects/11/**/*.vm
 projects/12/**/*.vm
+
+# Token parser generate these files
+projects/10/**/*_KM.xml
