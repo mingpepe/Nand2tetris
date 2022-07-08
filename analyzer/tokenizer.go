@@ -155,6 +155,8 @@ func (t *Tokenizer) CurrentToken() string {
 		token = "&lt;"
 	} else if token == ">" {
 		token = "&gt;"
+	} else if token == "&" {
+		token = "&amp;"
 	}
 	return token
 }
