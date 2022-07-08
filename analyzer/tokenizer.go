@@ -70,6 +70,7 @@ func (t *Tokenizer) Parse() {
 	buf := make([]rune, 0)
 	ptr := 0
 	scanner := bufio.NewScanner(t.reader)
+	multi_line_comments := false
 	for scanner.Scan() {
 		line := scanner.Text()
 		line = strings.TrimSpace(line)
@@ -81,7 +82,16 @@ func (t *Tokenizer) Parse() {
 			if strings.HasSuffix(line, "*/") {
 				continue
 			} else {
-				println("Todo : handle corss line comments")
+				multi_line_comments = true
+			}
+		}
+
+		if multi_line_comments {
+			// Assume that it's the end of line
+			idx := strings.Index(line, "*/")
+			if idx != -1 {
+				multi_line_comments = false
+				continue
 			}
 		}
 
