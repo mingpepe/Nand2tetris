@@ -160,7 +160,7 @@ func (t *Tokenizer) CurrentToken() string {
 	token := t.tokens[t.ptr]
 	if t.TokenType() == STRING_CONST {
 		length := len(token)
-		token = token[1 : length-2]
+		token = token[1 : length-1]
 	} else if token == "<" {
 		token = "&lt;"
 	} else if token == ">" {
