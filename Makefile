@@ -56,3 +56,13 @@ analyzer.exe: executable\analyzer\main.go analyzer\tokenizer.go analyzer\compila
 test_analyzer: analyzer.exe
 	analyzer.exe -f projects\10\ArrayTest\Main.jack
 	tools\TextComparer.bat projects\10\ArrayTest\Main_KM.xml projects\10\ArrayTest\MainT.xml
+
+	analyzer.exe -d projects\10\ExpressionLessSquare
+	tools\TextComparer.bat projects\10\ExpressionLessSquare\Main_KM.xml projects\10\ExpressionLessSquare\MainT.xml
+	tools\TextComparer.bat projects\10\ExpressionLessSquare\Square_KM.xml projects\10\ExpressionLessSquare\SquareT.xml
+	tools\TextComparer.bat projects\10\ExpressionLessSquare\SquareGame_KM.xml projects\10\ExpressionLessSquare\SquareGame.xml
+
+	analyzer.exe -d projects\10\Square
+	tools\TextComparer.bat projects\10\Square\Main_KM.xml projects\10\Square\MainT.xml
+	tools\TextComparer.bat projects\10\Square\Square_KM.xml projects\10\Square\SquareT.xml
+	tools\TextComparer.bat projects\10\Square\SquareGame_KM.xml projects\10\Square\SquareGame.xml

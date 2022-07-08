@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"path/filepath"
 	"strings"
 
 	"github.com/mingpepe/Nand2teris/analyzer"
@@ -20,7 +21,7 @@ func main() {
 	var directory = flag.String("d", "", "directory contains jack files")
 	flag.Parse()
 
-	out_filename := ""
+	filenames := make([]string, 0)
 	if *directory == "" {
 		if !exist(*filename) {
 			log.Printf("file not found: %s", *filename)
@@ -31,41 +32,53 @@ func main() {
 			log.Println("input must be a jack file")
 			return
 		}
-
-		len := len(*filename)
-		out_filename = (*filename)[:len-5] + "_KM.xml"
+		filenames = append(filenames, *filename)
 	} else {
-		// Todo : handle multi files
-		idx := strings.LastIndex(*directory, "\\")
-		name := (*directory)[idx+1:]
-		out_filename = *directory + "\\" + name + "xml"
-	}
-	f, err := os.Open(*filename)
-	if err != nil {
-		log.Fatal(err)
-	}
-	defer f.Close()
-	// Test only
-	ana := analyzer.NewTokenAnalyzer(f)
-	ana.Parse()
-
-	print(out_filename + "\n")
-
-	out_f, err := os.Create(out_filename)
-	if err != nil {
-		log.Print(err.Error())
-	}
-	defer out_f.Close()
-	out_f.WriteString("<tokens>\n")
-	for ana.HasMoreTokens() {
-		token_type := ana.TokenType()
-		token := ana.CurrentToken()
-		_, err = out_f.WriteString(fmt.Sprintf("<%s>%s</%s>", token_type, token, token_type))
+		err := filepath.Walk(*directory, func(path string, info os.FileInfo, err error) error {
+			if err != nil {
+				return err
+			}
+			if !info.IsDir() {
+				if strings.HasSuffix(path, ".jack") {
+					filenames = append(filenames, path)
+				}
+			}
+			return nil
+		})
 		if err != nil {
-			log.Fatal(err.Error())
+			log.Fatal(err)
 		}
-		out_f.WriteString("\n")
-		ana.Advance()
 	}
-	out_f.WriteString("</tokens>\n")
+
+	for _, _filename := range filenames {
+		f, err := os.Open(_filename)
+		if err != nil {
+			log.Fatal(err)
+		}
+		defer f.Close()
+
+		ana := analyzer.NewTokenAnalyzer(f)
+		ana.Parse()
+
+		length := len(_filename)
+		out_filename := (_filename)[:length-5] + "_KM.xml"
+
+		out_f, err := os.Create(out_filename)
+		if err != nil {
+			log.Print(err.Error())
+		}
+		defer out_f.Close()
+		out_f.WriteString("<tokens>\n")
+		for ana.HasMoreTokens() {
+			token_type := ana.TokenType()
+			token := ana.CurrentToken()
+			_, err = out_f.WriteString(fmt.Sprintf("<%s>%s</%s>", token_type, token, token_type))
+			if err != nil {
+				log.Fatal(err.Error())
+			}
+			out_f.WriteString("\n")
+			ana.Advance()
+		}
+		out_f.WriteString("</tokens>\n")
+	}
 }
