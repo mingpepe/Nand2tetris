@@ -91,8 +91,8 @@ func (t *Tokenizer) Parse() {
 			idx := strings.Index(line, "*/")
 			if idx != -1 {
 				multi_line_comments = false
-				continue
 			}
+			continue
 		}
 
 		idx := strings.Index(line, "//")
