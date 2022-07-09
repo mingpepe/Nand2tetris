@@ -27,4 +27,4 @@ projects/11/**/*.vm
 projects/12/**/*.vm
 
 # Token parser generate these files
-projects/10/**/*_KM.xml
+projects/10/**/*_KMT.xml

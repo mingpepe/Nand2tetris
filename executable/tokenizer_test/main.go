@@ -61,7 +61,7 @@ func main() {
 		ana.Parse()
 
 		length := len(_filename)
-		out_filename := (_filename)[:length-5] + "_KM.xml"
+		out_filename := (_filename)[:length-5] + "_KMT.xml"
 
 		out_f, err := os.Create(out_filename)
 		if err != nil {
