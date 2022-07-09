@@ -28,3 +28,5 @@ projects/12/**/*.vm
 
 # Token parser generate these files
 projects/10/**/*_KMT.xml
+# Stage 2 generate these files
+projects/10/**/*_KM.xml
