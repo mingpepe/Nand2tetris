@@ -50,14 +50,15 @@ func main() {
 	}
 
 	for _, _filename := range filenames {
+		println(_filename)
 		f, err := os.Open(_filename)
 		if err != nil {
 			log.Fatal(err)
 		}
 		defer f.Close()
 
-		ana := analyzer.NewTokenAnalyzer(f)
-		ana.Parse()
+		tokenizer := analyzer.NewTokenizer(f)
+		tokenizer.Parse()
 
 		length := len(_filename)
 		out_filename := (_filename)[:length-5] + "_KM.xml"
@@ -67,5 +68,9 @@ func main() {
 			log.Print(err.Error())
 		}
 		defer out_f.Close()
+
+		tokenizer.Advance()
+		compilation_engine := analyzer.NewCompilationEngine(tokenizer, out_f)
+		compilation_engine.CompileClass()
 	}
 }

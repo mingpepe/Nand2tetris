@@ -51,7 +51,7 @@ os:
 os_test_app:
 	python copy_os_for_test.py
 	tools\JackCompiler.bat projects\11\Pong
-tokenizer_test.exe: executable\tokenizer_test\main.go analyzer\tokenizer.go analyzer\compilation_engine.go
+tokenizer_test.exe: executable\tokenizer_test\main.go analyzer\tokenizer.go
 	go build -o tokenizer_test.exe executable\tokenizer_test\main.go
 test_tokenizer: tokenizer_test.exe
 	tokenizer_test.exe -f projects\10\ArrayTest\Main.jack
@@ -67,18 +67,18 @@ test_tokenizer: tokenizer_test.exe
 	tools\TextComparer.bat projects\10\Square\Square_KMT.xml projects\10\Square\SquareT.xml
 	tools\TextComparer.bat projects\10\Square\SquareGame_KMT.xml projects\10\Square\SquareGameT.xml
 
-compilation_engine.exe: executable\compilation_engine_test\main.go analyzer\tokenizer.go analyzer\compilation_engine.go
-	go build -o compilation_engine.exe executable\compilation_engine_test\main.go
-test_compilation_engine: compilation_engine.exe
-	compilation_engine.exe -f projects\10\ArrayTest\Main.jack
+compilation_engine_test.exe: executable\compilation_engine_test\main.go analyzer\tokenizer.go analyzer\compilation_engine.go
+	go build -o compilation_engine_test.exe executable\compilation_engine_test\main.go
+test_compilation_engine: compilation_engine_test.exe
+	compilation_engine_test.exe -f projects\10\ArrayTest\Main.jack
 	tools\TextComparer.bat projects\10\ArrayTest\Main_KM.xml projects\10\ArrayTest\Main.xml
 
-	compilation_engine.exe -d projects\10\ExpressionLessSquare
+	compilation_engine_test.exe -d projects\10\ExpressionLessSquare
 	tools\TextComparer.bat projects\10\ExpressionLessSquare\Main_KM.xml projects\10\ExpressionLessSquare\Main.xml
 	tools\TextComparer.bat projects\10\ExpressionLessSquare\Square_KM.xml projects\10\ExpressionLessSquare\Square.xml
 	tools\TextComparer.bat projects\10\ExpressionLessSquare\SquareGame_KM.xml projects\10\ExpressionLessSquare\SquareGame.xml
 
-	compilation_engine.exe -d projects\10\Square
+	compilation_engine_test.exe -d projects\10\Square
 	tools\TextComparer.bat projects\10\Square\Main_KM.xml projects\10\Square\Main.xml
 	tools\TextComparer.bat projects\10\Square\Square_KM.xml projects\10\Square\Square.xml
 	tools\TextComparer.bat projects\10\Square\SquareGame_KM.xml projects\10\Square\SquareGame.xml

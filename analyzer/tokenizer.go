@@ -18,35 +18,35 @@ const (
 
 // Keyword
 const (
-	CLASS int = iota
-	METHOD
-	FUNCTION
-	CONSTRUCTOR
-	INT
-	BOLLEAN
-	CHAR
-	VOID
-	VAR
-	STATIC
-	FIELD
-	LET
-	DO
-	IF
-	ELSE
-	WHILE
-	RETURN
-	TRUE
-	FALSE
-	NULL
-	THIS
+	CLASS       = "class"
+	METHOD      = "method"
+	FUNCTION    = "function"
+	CONSTRUCTOR = "constructor"
+	INT         = "int"
+	BOOLEAN     = "boolean"
+	CHAR        = "char"
+	VOID        = "void"
+	VAR         = "var"
+	STATIC      = "static"
+	FIELD       = "field"
+	LET         = "let"
+	DO          = "do"
+	IF          = "if"
+	ELSE        = "else"
+	WHILE       = "while"
+	RETURN      = "return"
+	TRUE        = "true"
+	FALSE       = "false"
+	NULL        = "null"
+	THIS        = "this"
 )
 
-var keywords = []string{"class", "method", "function",
-	"constructor", "int", "boolean",
-	"char", "void", "var", "static",
-	"field", "let", "do", "if",
-	"else", "while", "return", "true",
-	"false", "null", "this"}
+var keywords = []string{CLASS, METHOD, FUNCTION,
+	CONSTRUCTOR, INT, BOOLEAN,
+	CHAR, VOID, VAR, STATIC,
+	FIELD, LET, DO, IF,
+	ELSE, WHILE, RETURN, TRUE,
+	FALSE, NULL, THIS}
 
 const symbols = "{}()[].,;+-*/&|<>=~"
 
@@ -58,11 +58,11 @@ type Tokenizer struct {
 	ptr    int
 }
 
-func NewTokenAnalyzer(reader io.Reader) *Tokenizer {
+func NewTokenizer(reader io.Reader) *Tokenizer {
 	t := &Tokenizer{}
 	t.reader = reader
 	t.tokens = make([]string, 0)
-	t.ptr = 0
+	t.ptr = -1
 	return t
 }
 
@@ -149,7 +149,7 @@ func (t *Tokenizer) Parse() {
 }
 
 func (t *Tokenizer) HasMoreTokens() bool {
-	return t.ptr < len(t.tokens)
+	return t.ptr < len(t.tokens)-1
 }
 
 func (t *Tokenizer) Advance() {
@@ -194,22 +194,32 @@ func (t *Tokenizer) TokenType() string {
 	return IDENTIFIER
 }
 
-func (t *Tokenizer) Keyword() int {
-	return CLASS
+func (t *Tokenizer) Keyword() string {
+	return t.CurrentToken()
 }
 
 func (t *Tokenizer) Symbol() byte {
-	return 0
+	token := t.CurrentToken()
+	switch token {
+	case "&lt;":
+		return '<'
+	case "&gt;":
+		return '>'
+	case "&amp;":
+		return '&'
+	}
+	return token[0]
 }
 
 func (t *Tokenizer) Identifier() string {
-	return ""
+	return t.CurrentToken()
 }
 
 func (t *Tokenizer) IntVal() int {
-	return 0
+	s, _ := strconv.Atoi(t.CurrentToken())
+	return s
 }
 
 func (t *Tokenizer) StringVal() string {
-	return ""
+	return t.CurrentToken()
 }

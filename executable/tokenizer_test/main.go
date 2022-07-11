@@ -57,8 +57,8 @@ func main() {
 		}
 		defer f.Close()
 
-		ana := analyzer.NewTokenAnalyzer(f)
-		ana.Parse()
+		tokenizer := analyzer.NewTokenizer(f)
+		tokenizer.Parse()
 
 		length := len(_filename)
 		out_filename := (_filename)[:length-5] + "_KMT.xml"
@@ -69,15 +69,15 @@ func main() {
 		}
 		defer out_f.Close()
 		out_f.WriteString("<tokens>\n")
-		for ana.HasMoreTokens() {
-			token_type := ana.TokenType()
-			token := ana.CurrentToken()
+		for tokenizer.HasMoreTokens() {
+			tokenizer.Advance()
+			token_type := tokenizer.TokenType()
+			token := tokenizer.CurrentToken()
 			_, err = out_f.WriteString(fmt.Sprintf("<%s>%s</%s>", token_type, token, token_type))
 			if err != nil {
 				log.Fatal(err.Error())
 			}
 			out_f.WriteString("\n")
-			ana.Advance()
 		}
 		out_f.WriteString("</tokens>\n")
 	}
