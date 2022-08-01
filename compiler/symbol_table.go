@@ -1,18 +1,19 @@
 package compiler
 
+type KIND int
 type SymbolTable struct {
 	table          map[string]Variable
-	kindCountTable map[int]int
+	kindCountTable map[KIND]int
 }
 
 type Variable struct {
 	varType string
-	kind    int
+	kind    KIND
 	index   int
 }
 
 const (
-	SYMBOL_STATIC int = iota
+	SYMBOL_STATIC KIND = iota
 	SYMBOL_FIELD
 	SYMBOL_ARG
 	SYMBOL_VAR
@@ -33,7 +34,7 @@ func (s *SymbolTable) StartSubroutine() {
 
 }
 
-func (s *SymbolTable) Define(name, _type string, kind int) {
+func (s *SymbolTable) Define(name, _type string, kind KIND) {
 	var variable Variable
 	variable.varType = _type
 	variable.kind = kind
@@ -42,11 +43,11 @@ func (s *SymbolTable) Define(name, _type string, kind int) {
 	s.kindCountTable[kind]++
 }
 
-func (s *SymbolTable) VarCount(kind int) int {
+func (s *SymbolTable) VarCount(kind KIND) int {
 	return s.kindCountTable[kind]
 }
 
-func (s *SymbolTable) KingOf(name string) int {
+func (s *SymbolTable) KingOf(name string) KIND {
 	return s.table[name].kind
 }
 
