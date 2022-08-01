@@ -1,4 +1,4 @@
-package analyzer
+package compiler
 
 type SymbolTable struct {
 	table          map[string]Variable
