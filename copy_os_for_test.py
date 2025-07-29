@@ -1,7 +1,7 @@
 import shutil
 
-base_dir = r'C:\Users\user\Desktop\Nand2tetris\projects\12'
-dst_dir = r'C:\Users\user\Desktop\Nand2tetris\projects\11\Pong'
+base_dir = r'projects\12'
+dst_dir = r'projects\11\Pong'
 shutil.copyfile(base_dir + r'\ArrayTest\Array.jack', dst_dir + r'\Array.jack')
 shutil.copyfile(base_dir + r'\KeyboardTest\Keyboard.jack', dst_dir + r'\Keyboard.jack')
 shutil.copyfile(base_dir + r'\MathTest\Math.jack', dst_dir + r'\Math.jack')
