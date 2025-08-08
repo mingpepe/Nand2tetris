@@ -67,7 +67,7 @@ test_tokenizer: tokenizer_test.exe
 	tools\TextComparer.bat projects\10\Square\Square_KMT.xml projects\10\Square\SquareT.xml
 	tools\TextComparer.bat projects\10\Square\SquareGame_KMT.xml projects\10\Square\SquareGameT.xml
 
-compilation_engine_test.exe: executable\compilation_engine_test\main.go analyzer\tokenizer.go analyzer\compilation_engine.go
+compilation_engine_test.exe: executable\compilation_engine_test\main.go compiler\tokenizer.go compiler\compilation_engine_xml.go
 	go build -o compilation_engine_test.exe executable\compilation_engine_test\main.go
 test_compilation_engine: compilation_engine_test.exe
 	compilation_engine_test.exe -f projects\10\ArrayTest\Main.jack
@@ -82,3 +82,14 @@ test_compilation_engine: compilation_engine_test.exe
 	tools\TextComparer.bat projects\10\Square\Main_KM.xml projects\10\Square\Main.xml
 	tools\TextComparer.bat projects\10\Square\Square_KM.xml projects\10\Square\Square.xml
 	tools\TextComparer.bat projects\10\Square\SquareGame_KM.xml projects\10\Square\SquareGame.xml
+
+compiler.exe: executable\compiler_test\main.go compiler\tokenizer.go compiler\compilation_engine_vm.go compiler\symbol_table.go compiler\vm_writer.go
+	go build -o compiler.exe executable\compiler_test\main.go
+test_compiler: compiler.exe
+	compiler.exe -f projects\11\Average\Main.jack
+	compiler.exe -f projects\11\ComplexArrays\Main.jack
+	compiler.exe -f projects\11\ConvertToBin\Main.jack
+	compiler.exe -d projects\11\Pong
+	compiler.exe -f projects\11\Seven\Main.jack
+	compiler.exe -d projects\11\Square
+	

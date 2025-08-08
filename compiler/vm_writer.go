@@ -51,6 +51,10 @@ func (v *VMWriter) WriteReturn() {
 	v.writeVMCode("return")
 }
 
+func (v *VMWriter) WriteComment(comment string) {
+	v.writer.Write([]byte("// " + comment + "\n"))
+}
+
 func (v *VMWriter) writeVMCode(cmd string, args ...string) {
 	if len(args) >= 1 {
 		cmd += " " + args[0]

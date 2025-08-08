@@ -1,4 +1,4 @@
-package analyzer
+package compiler
 
 import (
 	"fmt"
@@ -7,19 +7,19 @@ import (
 	"runtime/debug"
 )
 
-type CompilationEngine struct {
+type CompilationEngineXml struct {
 	tokenizer *Tokenizer
 	writer    io.Writer
 }
 
-func NewCompilationEngine(tokenizer *Tokenizer, writer io.Writer) *CompilationEngine {
-	c := &CompilationEngine{}
+func NewCompilationEngineXml(tokenizer *Tokenizer, writer io.Writer) *CompilationEngineXml {
+	c := &CompilationEngineXml{}
 	c.tokenizer = tokenizer
 	c.writer = writer
 	return c
 }
 
-func (e *CompilationEngine) mustHaveTokeType(tokenType string) {
+func (e *CompilationEngineXml) mustHaveTokeType(tokenType string) {
 	tok := e.tokenizer.TokenType()
 	if tok != tokenType {
 		debug.PrintStack()
@@ -28,7 +28,7 @@ func (e *CompilationEngine) mustHaveTokeType(tokenType string) {
 	}
 }
 
-func (e *CompilationEngine) mustHaveKeyword(keyword string) {
+func (e *CompilationEngineXml) mustHaveKeyword(keyword string) {
 	e.mustHaveTokeType(KEYWORD)
 	key := e.tokenizer.Keyword()
 	if key != keyword {
@@ -38,7 +38,7 @@ func (e *CompilationEngine) mustHaveKeyword(keyword string) {
 	}
 }
 
-func (e *CompilationEngine) mustHaveSymol(symbol byte) {
+func (e *CompilationEngineXml) mustHaveSymol(symbol byte) {
 	e.mustHaveTokeType(SYMBOL)
 	sym := e.tokenizer.Symbol()
 	if sym != symbol {
@@ -48,22 +48,22 @@ func (e *CompilationEngine) mustHaveSymol(symbol byte) {
 	}
 }
 
-func (e *CompilationEngine) writeOutput(content string) {
+func (e *CompilationEngineXml) writeOutput(content string) {
 	e.writer.Write([]byte(content))
 }
 
-func (e *CompilationEngine) writeOutputLine(content string) {
+func (e *CompilationEngineXml) writeOutputLine(content string) {
 	e.writeOutput(content + "\n")
 }
 
-func (e *CompilationEngine) writeKeyword(keyword string) {
+func (e *CompilationEngineXml) writeKeyword(keyword string) {
 	e.mustHaveKeyword(keyword)
 	tmp := fmt.Sprintf("<keyword>%s</keyword>", keyword)
 	e.writeOutputLine(tmp)
 	e.tokenizer.Advance()
 }
 
-func (e *CompilationEngine) writeIdentifier() {
+func (e *CompilationEngineXml) writeIdentifier() {
 	e.mustHaveTokeType(IDENTIFIER)
 	id := e.tokenizer.Identifier()
 	tmp := fmt.Sprintf("<identifier>%s</identifier>", id)
@@ -71,14 +71,14 @@ func (e *CompilationEngine) writeIdentifier() {
 	e.tokenizer.Advance()
 }
 
-func (e *CompilationEngine) writeSymbol(symbol byte) {
+func (e *CompilationEngineXml) writeSymbol(symbol byte) {
 	e.mustHaveSymol(symbol)
 	tmp := fmt.Sprintf("<symbol>%s</symbol>", string(symbol))
 	e.writeOutputLine(tmp)
 	e.tokenizer.Advance()
 }
 
-func (e *CompilationEngine) CompileClass() {
+func (e *CompilationEngineXml) CompileClass() {
 	e.writeOutputLine("<class>")
 	e.writeKeyword(CLASS)
 	e.writeIdentifier()
@@ -108,7 +108,7 @@ func (e *CompilationEngine) CompileClass() {
 	e.writeOutputLine("</class>")
 }
 
-func (e *CompilationEngine) CompileClassVarDec() {
+func (e *CompilationEngineXml) CompileClassVarDec() {
 	e.writeOutputLine("<classVarDec>")
 	keyword := e.tokenizer.Keyword()
 	e.writeKeyword(keyword)
@@ -151,7 +151,7 @@ func (e *CompilationEngine) CompileClassVarDec() {
 	e.writeOutputLine("</classVarDec>")
 }
 
-func (e *CompilationEngine) CompileSubroutineDec() {
+func (e *CompilationEngineXml) CompileSubroutineDec() {
 	e.writeOutputLine("<subroutineDec>")
 	e.mustHaveTokeType(KEYWORD)
 	key := e.tokenizer.Keyword()
@@ -187,7 +187,7 @@ func (e *CompilationEngine) CompileSubroutineDec() {
 	e.writeOutputLine("</subroutineDec>")
 }
 
-func (e *CompilationEngine) CompileParameterList() {
+func (e *CompilationEngineXml) CompileParameterList() {
 	e.writeOutputLine("<parameterList>")
 	if e.tokenizer.TokenType() == SYMBOL {
 		// No parameter
@@ -213,7 +213,7 @@ func (e *CompilationEngine) CompileParameterList() {
 	e.writeOutputLine("</parameterList>")
 }
 
-func (e *CompilationEngine) CompileSubroutineBody() {
+func (e *CompilationEngineXml) CompileSubroutineBody() {
 	e.writeOutputLine("<subroutineBody>")
 	e.writeSymbol('{')
 	for {
@@ -228,7 +228,7 @@ func (e *CompilationEngine) CompileSubroutineBody() {
 	e.writeOutputLine("</subroutineBody>")
 }
 
-func (e *CompilationEngine) CompileVarDec() {
+func (e *CompilationEngineXml) CompileVarDec() {
 	e.writeOutputLine("<varDec>")
 	e.writeKeyword(VAR)
 
@@ -259,7 +259,7 @@ func (e *CompilationEngine) CompileVarDec() {
 	e.writeOutputLine("</varDec>")
 }
 
-func (e *CompilationEngine) CompileStatements() {
+func (e *CompilationEngineXml) CompileStatements() {
 	e.writeOutputLine("<statements>")
 	if e.tokenizer.TokenType() == KEYWORD {
 		keep_going := true
@@ -284,7 +284,7 @@ func (e *CompilationEngine) CompileStatements() {
 	e.writeOutputLine("</statements>")
 }
 
-func (e *CompilationEngine) CompileLet() {
+func (e *CompilationEngineXml) CompileLet() {
 	e.writeOutputLine("<letStatement>")
 	e.writeKeyword(LET)
 	e.writeIdentifier()
@@ -299,7 +299,7 @@ func (e *CompilationEngine) CompileLet() {
 	e.writeOutputLine("</letStatement>")
 }
 
-func (e *CompilationEngine) CompileIf() {
+func (e *CompilationEngineXml) CompileIf() {
 	e.writeOutputLine("<ifStatement>")
 	e.writeKeyword(IF)
 	e.writeSymbol('(')
@@ -317,7 +317,7 @@ func (e *CompilationEngine) CompileIf() {
 	e.writeOutputLine("</ifStatement>")
 }
 
-func (e *CompilationEngine) CompileWhile() {
+func (e *CompilationEngineXml) CompileWhile() {
 	e.writeOutputLine("<whileStatement>")
 	e.writeKeyword(WHILE)
 
@@ -330,7 +330,7 @@ func (e *CompilationEngine) CompileWhile() {
 	e.writeOutputLine("</whileStatement>")
 }
 
-func (e *CompilationEngine) CompileDo() {
+func (e *CompilationEngineXml) CompileDo() {
 	e.writeOutputLine("<doStatement>")
 	e.writeKeyword(DO)
 
@@ -351,7 +351,7 @@ func (e *CompilationEngine) CompileDo() {
 	e.writeOutputLine("</doStatement>")
 }
 
-func (e *CompilationEngine) CompileReturn() {
+func (e *CompilationEngineXml) CompileReturn() {
 	e.writeOutputLine("<returnStatement>")
 	e.writeKeyword(RETURN)
 	if e.tokenizer.TokenType() == SYMBOL && e.tokenizer.Symbol() == ';' {
@@ -363,7 +363,7 @@ func (e *CompilationEngine) CompileReturn() {
 	e.writeOutputLine("</returnStatement>")
 }
 
-func (e *CompilationEngine) CompileExpression() {
+func (e *CompilationEngineXml) CompileExpression() {
 	e.writeOutputLine("<expression>")
 	for {
 		e.CompileTerm()
@@ -389,7 +389,7 @@ func (e *CompilationEngine) CompileExpression() {
 	e.writeOutputLine("</expression>")
 }
 
-func (e *CompilationEngine) CompileTerm() {
+func (e *CompilationEngineXml) CompileTerm() {
 	e.writeOutputLine("<term>")
 	if e.tokenizer.TokenType() == STRING_CONST {
 		tmp := e.tokenizer.StringVal()
@@ -447,7 +447,7 @@ func (e *CompilationEngine) CompileTerm() {
 	e.writeOutputLine("</term>")
 }
 
-func (e *CompilationEngine) CompileExpressionList() {
+func (e *CompilationEngineXml) CompileExpressionList() {
 	e.writeOutputLine("<expressionList>")
 	if e.tokenizer.TokenType() == SYMBOL && e.tokenizer.Symbol() == ')' {
 		goto END

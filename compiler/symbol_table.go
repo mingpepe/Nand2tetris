@@ -1,5 +1,9 @@
 package compiler
 
+import (
+	"log"
+)
+
 type KIND int
 type SymbolTable struct {
 	table           map[string]Variable
@@ -22,10 +26,27 @@ const (
 	SYMBOL_NONE
 )
 
+func KindToSegment(kind KIND) string {
+	switch kind {
+	case SYMBOL_STATIC:
+		return "static"
+	case SYMBOL_FIELD:
+		return "this"
+	case SYMBOL_ARG:
+		return "argument"
+	case SYMBOL_VAR:
+		return "local"
+	default:
+		log.Fatalf("unknown kind: %d", kind)
+		return ""
+	}
+}
+
 func NewSymbolTable() *SymbolTable {
 	s := SymbolTable{}
 	s.table = make(map[string]Variable)
 	s.subRoutinetable = make(map[string]Variable)
+	s.kindCountTable = make(map[KIND]int)
 	s.kindCountTable[SYMBOL_STATIC] = 0
 	s.kindCountTable[SYMBOL_FIELD] = 0
 	s.kindCountTable[SYMBOL_ARG] = 0
@@ -45,11 +66,9 @@ func (s *SymbolTable) Define(name, _type string, kind KIND) {
 	variable.kind = kind
 	variable.index = s.kindCountTable[kind]
 	switch kind {
-	case SYMBOL_STATIC:
-	case SYMBOL_FIELD:
+	case SYMBOL_STATIC, SYMBOL_FIELD:
 		s.table[name] = variable
-	case SYMBOL_ARG:
-	case SYMBOL_VAR:
+	case SYMBOL_ARG, SYMBOL_VAR:
 		s.subRoutinetable[name] = variable
 	}
 	s.kindCountTable[kind]++
@@ -59,7 +78,7 @@ func (s *SymbolTable) VarCount(kind KIND) int {
 	return s.kindCountTable[kind]
 }
 
-func (s *SymbolTable) KingOf(name string) KIND {
+func (s *SymbolTable) KindOf(name string) KIND {
 	return s.lookUp(name).kind
 }
 
@@ -72,9 +91,11 @@ func (s *SymbolTable) IndexOf(name string) int {
 }
 
 func (s *SymbolTable) lookUp(name string) Variable {
-	v, exist := s.table[name]
-	if exist {
+	if v, exist := s.table[name]; exist {
 		return v
 	}
-	return s.subRoutinetable[name]
+	if v, exist := s.subRoutinetable[name]; exist {
+		return v
+	}
+	return Variable{kind: SYMBOL_NONE}
 }

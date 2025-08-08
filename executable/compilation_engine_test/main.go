@@ -7,7 +7,7 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/mingpepe/Nand2teris/analyzer"
+	"github.com/mingpepe/Nand2teris/compiler"
 )
 
 func exist(name string) bool {
@@ -57,7 +57,7 @@ func main() {
 		}
 		defer f.Close()
 
-		tokenizer := analyzer.NewTokenizer(f)
+		tokenizer := compiler.NewTokenizer(f)
 		tokenizer.Parse()
 
 		length := len(_filename)
@@ -70,7 +70,7 @@ func main() {
 		defer out_f.Close()
 
 		tokenizer.Advance()
-		compilation_engine := analyzer.NewCompilationEngine(tokenizer, out_f)
+		compilation_engine := compiler.NewCompilationEngineXml(tokenizer, out_f)
 		compilation_engine.CompileClass()
 	}
 }
