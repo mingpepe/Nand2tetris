@@ -11,7 +11,7 @@ Data in directory `doc`, `projects`, `tools` all comes from the official site
 - [x] Project 8 VM 2
 - [x] Project 9 Programming language
 - [x] Project 10 Compiler 1
-- [ ] Project 11 Compiler 2
+- [x] Project 11 Compiler 2
 - [x] Project 12 OS
 
 
