@@ -100,4 +100,8 @@ test_compiler: compiler.exe
 	compiler.exe -d projects\12\ScreenTest
 	compiler.exe -d projects\12\StringTest
 	compiler.exe -d projects\12\SysTest
+	compiler.exe -f MyApp\DirectRAM\Main.jack
+	compiler.exe -f MyApp\Error\Main.jack
+	compiler.exe -f MyApp\Helloworld\Main.jack
+	compiler.exe -f MyApp\Shell\Main.jack
 	
