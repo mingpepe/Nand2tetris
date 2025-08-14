@@ -92,4 +92,12 @@ test_compiler: compiler.exe
 	compiler.exe -d projects\11\Pong
 	compiler.exe -f projects\11\Seven\Main.jack
 	compiler.exe -d projects\11\Square
+	compiler.exe -d projects\12\ArrayTest
+	compiler.exe -d projects\12\KeyboardTest
+	compiler.exe -d projects\12\MathTest
+	compiler.exe -d projects\12\MemoryTest
+	compiler.exe -d projects\12\OutputTest
+	compiler.exe -d projects\12\ScreenTest
+	compiler.exe -d projects\12\StringTest
+	compiler.exe -d projects\12\SysTest
 	
