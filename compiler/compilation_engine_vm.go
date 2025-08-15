@@ -383,28 +383,32 @@ func (e *CompilationEngineVM) CompileIf() {
 	e.labelPairCnt++
 	L1 := fmt.Sprintf("IF_L1%d", idx)
 	L2 := fmt.Sprintf("IF_L2%d", idx)
+	L3 := fmt.Sprintf("IF_L3%d", idx)
 
 	e.handleKeyword(IF)
 	e.handleSymbol('(')
 	e.CompileExpression()
 	e.handleSymbol(')')
 
-	e.vmWriter.WriteArithmetic("not")
+	// Not instruction in VM is bitwise not. e.g. not 1 => -2
+	// Use 3 labels to handle it
 	e.vmWriter.WriteIf(L1)
-
+	e.vmWriter.WriteGoTo(L2)
+	e.vmWriter.WriteLabel(L1)
 	e.handleSymbol('{')
 	e.CompileStatements()
 	e.handleSymbol('}')
-	e.vmWriter.WriteGoTo(L2)
+	e.vmWriter.WriteGoTo(L3)
 
-	e.vmWriter.WriteLabel(L1)
+	e.vmWriter.WriteLabel(L2)
 	if e.tokenizer.TokenType() == KEYWORD && e.tokenizer.Keyword() == ELSE {
 		e.handleKeyword(ELSE)
 		e.handleSymbol('{')
 		e.CompileStatements()
 		e.handleSymbol('}')
 	}
-	e.vmWriter.WriteLabel(L2)
+	e.vmWriter.WriteLabel(L3)
+
 }
 
 func (e *CompilationEngineVM) CompileWhile() {
