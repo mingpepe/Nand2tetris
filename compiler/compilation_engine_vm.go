@@ -569,6 +569,9 @@ func (e *CompilationEngineVM) CompileTerm() {
 				fullName := ""
 				nArgs := 0
 				if e.tokenizer.Symbol() == '(' {
+					// calling a method of the current class: push 'this'
+					e.vmWriter.WritePush("pointer", 0)
+					nArgs++
 					fullName = e.className + "." + name
 				} else {
 					e.handleSymbol('.')
