@@ -86,11 +86,11 @@ test_compilation_engine: compilation_engine_test.exe
 compiler.exe: executable\compiler_test\main.go compiler\tokenizer.go compiler\compilation_engine_vm.go compiler\symbol_table.go compiler\vm_writer.go
 	go build -o compiler.exe executable\compiler_test\main.go
 test_compiler: compiler.exe
-	compiler.exe -f projects\11\Average\Main.jack
-	compiler.exe -f projects\11\ComplexArrays\Main.jack
-	compiler.exe -f projects\11\ConvertToBin\Main.jack
+	compiler.exe -d projects\11\Average
+	compiler.exe -d projects\11\ComplexArrays
+	compiler.exe -d projects\11\ConvertToBin
 	compiler.exe -d projects\11\Pong
-	compiler.exe -f projects\11\Seven\Main.jack
+	compiler.exe -d projects\11\Seven
 	compiler.exe -d projects\11\Square
 	compiler.exe -d projects\12\ArrayTest
 	compiler.exe -d projects\12\KeyboardTest
@@ -100,8 +100,8 @@ test_compiler: compiler.exe
 	compiler.exe -d projects\12\ScreenTest
 	compiler.exe -d projects\12\StringTest
 	compiler.exe -d projects\12\SysTest
-	compiler.exe -f MyApp\DirectRAM\Main.jack
-	compiler.exe -f MyApp\Error\Main.jack
-	compiler.exe -f MyApp\Helloworld\Main.jack
-	compiler.exe -f MyApp\Shell\Main.jack
+	compiler.exe -d MyApp\DirectRAM
+	compiler.exe -d MyApp\Error
+	compiler.exe -d MyApp\Helloworld
+	compiler.exe -d MyApp\Shell
 	
