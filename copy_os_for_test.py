@@ -12,6 +12,15 @@ files = [
     ('ScreenTest', 'Screen.jack'),
     ('StringTest', 'String.jack'),
     ('SysTest', 'Sys.jack'),
+
+    ('ArrayTest', 'Array.vm'),
+    ('KeyboardTest', 'Keyboard.vm'),
+    ('MathTest', 'Math.vm'),
+    ('MemoryTest', 'Memory.vm'),
+    ('OutputTest', 'Output.vm'),
+    ('ScreenTest', 'Screen.vm'),
+    ('StringTest', 'String.vm'),
+    ('SysTest', 'Sys.vm'),
 ]
 
 
