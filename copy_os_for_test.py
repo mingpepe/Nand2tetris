@@ -37,6 +37,7 @@ dst_dirs = [
     r'projects\12\MathTest',
     r'projects\12\MemoryTest',
     r'projects\12\OutputTest',
+    r'projects\12\ScreenTest',
     r'projects\12\StringTest',
     r'projects\12\SysTest',
 
