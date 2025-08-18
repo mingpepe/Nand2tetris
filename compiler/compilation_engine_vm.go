@@ -373,6 +373,9 @@ func (e *CompilationEngineVM) CompileLet() {
 		kind := e.symbolTable.KindOf(varName)
 		segment := KindToSegment(kind)
 		idx := e.symbolTable.IndexOf(varName)
+		if segment == "argument" && e.subroutineType == METHOD {
+			idx++
+		}
 		e.vmWriter.WritePop(segment, idx)
 	}
 	e.handleSymbol(';')
