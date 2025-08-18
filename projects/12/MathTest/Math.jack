@@ -91,6 +91,7 @@ class Math {
         var int q;
         var int result;
         var bool neg;
+        var int twiceY;
 
         let neg = false;
         if ((x < 0) & (y > 0)) {
@@ -106,7 +107,14 @@ class Math {
             return 0;
         }
 
-        let q = Math.divide(x, y + y);
+        let twiceY = y + y;
+        if (twiceY > 0) {
+            let q = Math.divide(x, twiceY);
+        } else {
+            // Overflow
+            let q = 0;
+        }
+
         if ((x - (2 * q * y)) < y) {
             let result = q + q;
         } else {
