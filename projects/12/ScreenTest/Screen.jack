@@ -59,7 +59,8 @@ class Screen {
     function void drawPixel(int x, int y) {
         var int address, mask;
 
-        let address = (y * (512 / 16)) + (x / 16);
+        // 512 / 16 = 32
+        let address = (y * (32)) + (x / 16);
         let mask = arr[x & 15];
 
         if (color) {
