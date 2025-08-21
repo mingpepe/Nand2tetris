@@ -75,17 +75,20 @@ class Screen {
         var int dx, dy, diff;
         var int a, b;
         var int i;
+        var int size;
 
         let i = 0;
         if (x1 = x2)
         {
             if (y1 < y2) {
-                while (i < Math.abs(y1 - y2)) {
+                let size = y2 - y1 + 1;
+                while (i < size) {
                     do Screen.drawPixel(x1, y1 + i);
                     let i = i + 1;
                 }
             } else {
-                while (i < Math.abs(y1 - y2)) {
+                let size = y1 - y2 + 1;
+                while (i < size) {
                     do Screen.drawPixel(x1, y2 + i);
                     let i = i + 1;
                 }
@@ -95,12 +98,14 @@ class Screen {
 
         if (y1 = y2) {
             if (x1 < x2) {
-                while (i < Math.abs(x1 - x2)) {
+                let size = x2 - x1 + 1;
+                while (i < size) {
                     do Screen.drawPixel(x1 + i, y1);
                     let i = i + 1;
                 }
             } else {
-                while (i < Math.abs(x1 - x2)) {
+                let size = x1 - x2 + 1;
+                while (i < size) {
                     do Screen.drawPixel(x2 + i , y1);
                     let i = i + 1;
                 }
