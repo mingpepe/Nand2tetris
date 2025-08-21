@@ -60,6 +60,10 @@ class Math {
             let neg = true;
             let y = -y;
         }
+        if ((x < 0) & (y < 0)) {
+            let x = -x;
+            let y = -y;
+        }
 
         let sum = 0;
         let shiftedX = x;
