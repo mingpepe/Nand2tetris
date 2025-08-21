@@ -120,11 +120,11 @@ class Screen {
         }
         // Only support north east & south east direction
         let dx = x2 - x1;
-        let dy = Math.abs(y2 - y1);
         let diff = 0;
         let a = 0;
         let b = 0;
         if ((y1 < y2)) {
+            let dy = y2 - y1;
             while ((a < dx) & (b < dy)) {
                 do Screen.drawPixel(x1 + a, y1 + b);
                 if (diff < 0) {
@@ -136,6 +136,7 @@ class Screen {
                 }
             }
         } else {
+            let dy = y1 - y2;
             while ((a < dx) & (b < dy)) {
                 do Screen.drawPixel(x1 + a, y1 - b);
                 if (diff < 0) {
