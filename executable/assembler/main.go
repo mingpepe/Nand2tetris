@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"path/filepath"
 
 	"github.com/mingpepe/Nand2teris/assembler"
 )
@@ -37,5 +38,28 @@ func main() {
 
 	for i := 0; i < len(binary); i += 2 {
 		fmt.Printf("%08b%08b\n", binary[i], binary[i+1])
+	}
+
+	dir := filepath.Dir(*filename)
+	base := filepath.Base(*filename)
+	name := base[:len(base)-len(filepath.Ext(base))]
+
+	newExt := ".hack"
+	outputPath := filepath.Join(dir, name+newExt)
+
+	file, err := os.Create(outputPath)
+	if err != nil {
+		fmt.Println("Error creating file:", err)
+		return
+	}
+	defer file.Close()
+
+	if len(binary)%2 != 0 {
+		log.Printf("Length of binary should be even")
+		return
+	}
+
+	for i := 0; i < len(binary); i += 2 {
+		fmt.Fprintf(file, "%08b%08b\n", binary[i], binary[i+1])
 	}
 }
