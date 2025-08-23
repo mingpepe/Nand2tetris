@@ -36,10 +36,6 @@ func main() {
 		log.Fatal(err)
 	}
 
-	for i := 0; i < len(binary); i += 2 {
-		fmt.Printf("%08b%08b\n", binary[i], binary[i+1])
-	}
-
 	dir := filepath.Dir(*filename)
 	base := filepath.Base(*filename)
 	name := base[:len(base)-len(filepath.Ext(base))]
