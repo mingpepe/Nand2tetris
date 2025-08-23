@@ -8,7 +8,7 @@ run_asm:assembler.exe
 	assembler.exe -f projects\06\max\MaxL.asm
 	assembler.exe -f projects\06\pong\Pong.asm
 	assembler.exe -f projects\06\pong\PongL.asm
-	assembler.exe -f projects\06\rect\RectL.asm
+	assembler.exe -f projects\06\rect\Rect.asm
 	assembler.exe -f projects\06\rect\RectL.asm
 run_vm_7: vm.exe
 	vm.exe -f projects\07\MemoryAccess\BasicTest\BasicTest.vm
