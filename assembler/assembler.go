@@ -123,8 +123,8 @@ func (a *Assembler) Compile(reader io.Reader) ([]byte, error) {
 				a.labelTable[label] = lineCount
 			} else {
 				lines = append(lines, line)
+				lineCount += 1
 			}
-			lineCount += 1
 		}
 	}
 
